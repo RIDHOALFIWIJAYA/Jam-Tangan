@@ -15,26 +15,14 @@
 </head>
 <body class="bg-gray-800 text-white">
 
-  <header class="fixed top-0 w-full z-50 bg-gray-800 shadow-sm sm:shadow-md px-4 py-3">
-  <div class="flex justify-between items-center">
-    <h1 class="text-lg sm:text-xl font-bold hover:rotate-6 transition-transform text-white">Jam Tangan</h1>
-    
-    <button id="menu-toggle" class="sm:hidden text-white focus:outline-none">
-      <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none"
-           viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M4 6h16M4 12h16M4 18h16" />
-      </svg>
-    </button>
-
-    <nav id="nav-menu" class="hidden sm:flex flex-col sm:flex-row absolute sm:static top-full left-0 w-full sm:w-auto bg-gray-800 sm:bg-transparent text-white sm:text-inherit mt-2 sm:mt-0 sm:items-center sm:gap-4 text-sm sm:text-lg font-medium">
-      <ul class="flex flex-col sm:flex-row gap-4 px-4 py-2 p-0 sm:p-5">
-        <li><a href="index.html" class="hover:text-blue-400 transition">Home</a></li>
-        <li><a href="produk.html" class="hover:text-blue-400 transition">Lihat produk</a></li>
+<header class="fixed top-0 w-full z-50 bg-gray-800 shadow-md sm:shadow-none px-4 py-3 flex justify-between items-center">
+    <h1 class="text-lg sm:text-xl font-bold hover:rotate-3 transition-transform">Jam Tangan</h1>
+    <nav>
+      <ul class="flex gap-4 text-sm sm:text-lg font-medium p-4">
+        <li><a href="produk.html" class="hover:text-blue-400 transition mr-20">Lihat produk</a></li>
       </ul>
     </nav>
-  </div>
-</header>
+  </header>
 
   <section class="mt-20 sm:mt-24 min-h-[100vh] flex items-center justify-center bg-[url('jam1.jpg')] bg-cover bg-center relative">
     <div class="absolute inset-0 bg-black/60"></div>
@@ -94,12 +82,6 @@
       duration: 1200,
       once: false,
     });
-  const toggle = document.getElementById("menu-toggle");
-  const menu = document.getElementById("nav-menu");
-
-  toggle.addEventListener("click", () => {
-    menu.classList.toggle("hidden");
-  });
 </script>
 </body>
 </html>
