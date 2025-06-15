@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet" />
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
   <style>
     body {
       font-family: 'Poppins', sans-serif;
@@ -13,125 +13,86 @@
   </style>
   <title>Jam Tangan</title>
 </head>
-<body class="bg-gray-900 text-white font-sans">
-  <div class="flex justify-between items-center bg-gray-800 fixed top-0 left-0 w-full z-50 shadow-md px-4">
-    <h1 class="m-3 font-bold text-lg sm:text-xl hover:rotate-7 transition-transform">Jam Tangan</h1>
-    <nav>
-      <ul class="flex p-7 gap-4 text-sm sm:text-lg font-medium">
+<body class="bg-gray-800 text-white">
+
+  <header class="fixed top-0 w-full z-50 bg-gray-800 shadow-sm sm:shadow-md px-4 py-3">
+  <div class="flex justify-between items-center">
+    <h1 class="text-lg sm:text-xl font-bold hover:rotate-6 transition-transform text-white">Jam Tangan</h1>
+    
+    <button id="menu-toggle" class="sm:hidden text-white focus:outline-none">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none"
+           viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M4 6h16M4 12h16M4 18h16" />
+      </svg>
+    </button>
+
+    <nav id="nav-menu" class="hidden sm:flex flex-col sm:flex-row absolute sm:static top-full left-0 w-full sm:w-auto bg-gray-800 sm:bg-transparent text-white sm:text-inherit mt-2 sm:mt-0 sm:items-center sm:gap-4 text-sm sm:text-lg font-medium">
+      <ul class="flex flex-col sm:flex-row gap-4 px-4 py-2 p-0 sm:p-5">
         <li><a href="#" class="hover:text-blue-400 transition">Home</a></li>
         <li><a href="#" class="hover:text-blue-400 transition">Lihat produk</a></li>
       </ul>
     </nav>
   </div>
+</header>
 
-  <main class="gap-4"></main>
-
-  <div class="relative flex flex-col mt-20 mb-10 min-h-screen bg-[url('jam1.jpg')] bg-cover bg-center bg-no-repeat">
-    <div></div>
-    <div class="relative z-10 bg-blur-shadow px-4">
-      <h1 class="text-3xl sm:text-5xl font-extrabold text-left mt-40 sm:mt-56 pb-4 bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-300" data-aos="fade-up">
-        Selamat datang DiJam Tangan
+  <section class="mt-20 sm:mt-24 min-h-[100vh] flex items-center justify-center bg-[url('jam1.jpg')] bg-cover bg-center relative">
+    <div class="absolute inset-0 bg-black/60"></div>
+    <div class="relative z-10 max-w-2xl text-center px-4">
+      <h1 class="text-3xl sm:text-5xl sm:pb-3 font-extrabold bg-gradient-to-r from-white to-gray-300 text-transparent bg-clip-text mb-4" data-aos="fade-up">
+        Selamat datang di Jam Tangan
       </h1>
-      <p class="text-base sm:text-2xl font-medium text-white drop-shadow-md" data-aos="fade-right">
-        Menyediakan Jam tangan, murah, berkualitas, dan keren.
+      <p class="text-base sm:text-xl font-medium text-white" data-aos="fade-right">
+        Menyediakan jam tangan murah, berkualitas, dan keren.
       </p>
     </div>
-  </div>
+  </section>
 
-  <!-- PRODUK BARIS 1 -->
-  <div class="flex flex-wrap justify-center gap-6 px-4 mb-10">
-    <!-- Produk 1-5 -->
-    <div class="w-full sm:w-52 bg-white rounded-2xl shadow-md overflow-hidden" data-aos="fade-left">
-      <img src="j1.png" alt="gambar jam" class="w-full h-auto object-cover" />
-      <p class="text-center py-2 text-lg font-bold text-gray-800">Jam 1</p>
-      <button class="w-full py-1 bg-blue-600 text-white hover:bg-blue-700 transition">
-        <a href="#">Beli</a>
-      </button>
-    </div>
+  <section class="px-4 py-10">
+    <div id="produk-list" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6"></div>
+  </section>
+  <script>
+    const produk = [
+      { nama: "Jam Sport", gambar: "j1.png", link: "#" },
+      { nama: "Jam Elegan", gambar: "j2.png", link: "#" },
+      { nama: "Jam Digital", gambar: "j3.jpg", link: "#" },
+      { nama: "Jam Casual", gambar: "j1.png", link: "#" },
+      { nama: "Jam Klasik", gambar: "j1.png", link: "#" },
+      { nama: "Jam Modern", gambar: "j1.png", link: "#" },
+      { nama: "Jam Pria", gambar: "j1.png", link: "#" },
+      { nama: "Jam Wanita", gambar: "j1.png", link: "#" },
+      { nama: "Jam Premium", gambar: "j1.png", link: "#" },
+      { nama: "Jam Anak", gambar: "j1.png", link: "#" }
+    ];
 
-    <div class="w-full sm:w-52 bg-white rounded-2xl shadow-md overflow-hidden" data-aos="fade-left">
-      <img src="j1.png" alt="gambar jam" class="w-full h-auto object-cover" />
-      <p class="text-center py-2 text-lg font-bold text-gray-800">Jam 1</p>
-      <button class="w-full py-1 bg-blue-600 text-white hover:bg-blue-700 transition">
-        <a href="#">Beli</a>
-      </button>
-    </div>
+    const container = document.getElementById("produk-list");
 
-    <div class="w-full sm:w-52 bg-white rounded-2xl shadow-md overflow-hidden" data-aos="fade-left">
-      <img src="j1.png" alt="gambar jam" class="w-full h-auto object-cover" />
-      <p class="text-center py-2 text-lg font-bold text-gray-800">Jam 1</p>
-      <button class="w-full py-1 bg-blue-600 text-white hover:bg-blue-700 transition">
-        <a href="#">Beli</a>
-      </button>
-    </div>
+    produk.forEach((item, index) => {
+      container.innerHTML += `
+        <div class="bg-white rounded-2xl shadow-md overflow-hidden" data-aos="${index % 2 === 0 ? 'fade-left' : 'fade-right'}">
+          <img src="${item.gambar}" alt="${item.nama}" class="w-full h-48 object-cover" />
+          <div class="p-3">
+            <p class="text-center text-lg font-bold text-gray-800 mb-2">${item.nama}</p>
+            <a href="${item.link}" class="block w-full text-center py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition">Beli</a>
+          </div>
+        </div>
+      `;
+    });
+  </script>
 
-    <div class="w-full sm:w-52 bg-white rounded-2xl shadow-md overflow-hidden" data-aos="fade-left">
-      <img src="j1.png" alt="gambar jam" class="w-full h-auto object-cover" />
-      <p class="text-center py-2 text-lg font-bold text-gray-800">Jam 1</p>
-      <button class="w-full py-1 bg-blue-600 text-white hover:bg-blue-700 transition">
-        <a href="#">Beli</a>
-      </button>
-    </div>
-
-    <div class="w-full sm:w-52 bg-white rounded-2xl shadow-md overflow-hidden" data-aos="fade-left">
-      <img src="j1.png" alt="gambar jam" class="w-full h-auto object-cover" />
-      <p class="text-center py-2 text-lg font-bold text-gray-800">Jam 1</p>
-      <button class="w-full py-1 bg-blue-600 text-white hover:bg-blue-700 transition">
-        <a href="#">Beli</a>
-      </button>
-    </div>
-  </div>
-
-  <!-- PRODUK BARIS 2 -->
-  <div class="flex flex-wrap justify-center gap-6 px-4 mb-10">
-    <!-- Produk 6-10 -->
-    <div class="w-full sm:w-52 bg-white rounded-2xl shadow-md overflow-hidden" data-aos="fade-right">
-      <img src="j1.png" alt="gambar jam" class="w-full h-auto object-cover" />
-      <p class="text-center py-2 text-lg font-bold text-gray-800">Jam 1</p>
-      <button class="w-full py-1 bg-blue-600 text-white hover:bg-blue-700 transition">
-        <a href="#">Beli</a>
-      </button>
-    </div>
-
-    <div class="w-full sm:w-52 bg-white rounded-2xl shadow-md overflow-hidden" data-aos="fade-right">
-      <img src="j1.png" alt="gambar jam" class="w-full h-auto object-cover" />
-      <p class="text-center py-2 text-lg font-bold text-gray-800">Jam 1</p>
-      <button class="w-full py-1 bg-blue-600 text-white hover:bg-blue-700 transition">
-        <a href="#">Beli</a>
-      </button>
-    </div>
-
-    <div class="w-full sm:w-52 bg-white rounded-2xl shadow-md overflow-hidden" data-aos="fade-right">
-      <img src="j1.png" alt="gambar jam" class="w-full h-auto object-cover" />
-      <p class="text-center py-2 text-lg font-bold text-gray-800">Jam 1</p>
-      <button class="w-full py-1 bg-blue-600 text-white hover:bg-blue-700 transition">
-        <a href="#">Beli</a>
-      </button>
-    </div>
-
-    <div class="w-full sm:w-52 bg-white rounded-2xl shadow-md overflow-hidden" data-aos="fade-right">
-      <img src="j1.png" alt="gambar jam" class="w-full h-auto object-cover" />
-      <p class="text-center py-2 text-lg font-bold text-gray-800">Jam 1</p>
-      <button class="w-full py-1 bg-blue-600 text-white hover:bg-blue-700 transition">
-        <a href="#">Beli</a>
-      </button>
-    </div>
-
-    <div class="w-full sm:w-52 bg-white rounded-2xl shadow-md overflow-hidden" data-aos="fade-right">
-      <img src="j1.png" alt="gambar jam" class="w-full h-auto object-cover" />
-      <p class="text-center py-2 text-lg font-bold text-gray-800">Jam 1</p>
-      <button class="w-full py-1 bg-blue-600 text-white hover:bg-blue-700 transition">
-        <a href="#">Beli</a>
-      </button>
-    </div>
-  </div>
-
+  <!-- AOS Animation -->
   <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
   <script>
     AOS.init({
-      duration: 1500,
+      duration: 1200,
       once: false,
     });
-  </script>
+  const toggle = document.getElementById("menu-toggle");
+  const menu = document.getElementById("nav-menu");
+
+  toggle.addEventListener("click", () => {
+    menu.classList.toggle("hidden");
+  });
+</script>
 </body>
 </html>
