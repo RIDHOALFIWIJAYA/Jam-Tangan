@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Detail Produk</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-800 text-gray-900 font-sans">
+  <div class="max-w-xl mx-auto mt-10 p-4 bg-white rounded-lg shadow">
+    <h1 id="nama-produk" class="text-3xl font-bold mb-4"></h1>
+    <img id="gambar-produk" class="w-full h-auto rounded mb-4" />
+    <p id="deskripsi-produk" class="text-xl mb-2 font-bold"></p>
+    <h3 id="harga-produk" class="text-xl font-semibold text-green-600"></h3>
+    <a id="wa-button" target="_blank" class="inline-block mt-4 bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Chat via WhatsApp</a>
+  </div>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get("id");
+
+    const produkData = {
+      jam1: {
+        nama: "Jam Sport",
+        gambar: "j1.png",
+        deskripsi: "Jam tangan sport dengan fitur tahan air, cocok untuk aktivitas outdoor.",
+        harga: "Rp500.000",
+        wa: "https://wa.me/6283140470146?text=Saya tertarik dengan Jam Sport"
+      },
+      jam2: {
+        nama: "Jam Elegan",
+        gambar: "j2.png",
+        deskripsi: "Desain elegan cocok untuk acara formal atau kantor.",
+        harga: "Rp650.000",
+        wa: "https://wa.me/6283140470146?text=Saya tertarik dengan Jam Elegan"
+      },
+      jam3: {
+        nama: "Jam Digital",
+        gambar: "j3.jpg",
+        deskripsi: "Jam Digital cocok untuk cowo.",
+        harga: "Rp652.000",
+        wa: "https://wa.me/6283140470146?text=Saya mau beli jam Digital"
+      },
+      jam4: {
+        nama: "Jam Casual",
+        gambar: "j4.jpg",
+        deskripsi: "Jamyang bertema casual.",
+        harga: "Rp700.000",
+        wa: "https://wa.me/6283140470146?text=Saya mau beli jam Kasual"
+      },
+      jam5: {
+        nama: "Jam Klasik",
+        gambar: "j1.jpg",
+        deskripsi: "Jam klasik desain biasa namun elegan ea.",
+        harga: "Rp800.000",
+        wa: "https://wa.me/6283140470146?text=Saya mau beli jam Elegan"
+      },
+      jam6: {
+        nama: "Jam Modern",
+        gambar: "j2.jpg",
+        deskripsi: "Jam modern yang bagus untuk produktivitas.",
+        harga: "Rp900.000",
+        wa: "https://wa.me/6283140470146?text=Saya mau beli jam Modern"
+      },
+      jam7: {
+        nama: "Jam Pria",
+        gambar: "j1.jpg",
+        deskripsi: "Jam Pria yang bagus untuk pria bukan boti.",
+        harga: "Rp650.000",
+        wa: "https://wa.me/6283140470146?text=Saya mau beli jam Pria"
+      },
+      jam8: {
+        nama: "Jam Wanita",
+        gambar: "j3.jpg",
+        deskripsi: "Jam Wanita cocok untuk Wanita .",
+        harga: "Rp600.000",
+        wa: "https://wa.me/6283140470146?text=Saya mau beli jam Wanita"
+      },
+      jam9: {
+        nama: "Jam Premium",
+        gambar: "j3.jpg",
+        deskripsi: "Jam yang buat jadi para elite ea.",
+        harga: "Rp50.000.000",
+        wa: "https://wa.me/6283140470146?text=Saya mau beli jam Premium"
+      },
+      jam10: {
+        nama: "Jam Anak",
+        gambar: "j3.jpg",
+        deskripsi: "Jam bagus buat anak kamu.",
+        harga: "Rp680.000",
+        wa: "https://wa.me/6283140470146?text=Saya mau beli jam Anak"
+      },
+      jam11: {
+        nama: "Jam Premium",
+        gambar: "j3.jpg",
+        deskripsi: "Jam yang buat jadi para elite ea.",
+        harga: "Rp50.000.000",
+        wa: "https://wa.me/6283140470146?text=Saya mau beli jam Premium"
+      },
+      jam12: {
+        nama: "Jam Anak",
+        gambar: "j3.jpg",
+        deskripsi: "Jam bagus buat anak kamu.",
+        harga: "Rp680.000",
+        wa: "https://wa.me/6283140470146?text=Saya mau beli jam Anak"
+      },
+      jam13: {
+        nama: "Jam Premium",
+        gambar: "j3.jpg",
+        deskripsi: "Jam yang buat jadi para elite ea.",
+        harga: "Rp50.000.000",
+        wa: "https://wa.me/6283140470146?text=Saya mau beli jam Premium"
+      },
+      jam14: {
+        nama: "Jam Anak",
+        gambar: "j3.jpg",
+        deskripsi: "Jam bagus buat anak kamu.",
+        harga: "Rp680.000",
+        wa: "https://wa.me/6283140470146?text=Saya mau beli jam Anak"
+      },
+      jam15: {
+        nama: "Jam Anak",
+        gambar: "j3.jpg",
+        deskripsi: "Jam bagus buat anak kamu.",
+        harga: "Rp680.000",
+        wa: "https://wa.me/6283140470146?text=Saya mau beli jam Anak"
+      },
+    };
+
+    const data = produkData[id];
+    if (data) {
+      document.getElementById("nama-produk").textContent = data.nama;
+      document.getElementById("gambar-produk").src = data.gambar;
+      document.getElementById("deskripsi-produk").textContent = data.deskripsi;
+      document.getElementById("harga-produk").textContent = data.harga;
+      document.getElementById("wa-button").href = data.wa;
+    } else {
+      document.body.innerHTML = '<div class="text-center mt-20 text-red-600 font-bold text-2xl">Produk Gaada sory</div>';
+    }
+  </script>
+</body>
+</html>
