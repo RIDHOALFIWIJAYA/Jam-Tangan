@@ -17,7 +17,7 @@
 
 <header class="fixed top-0 w-full z-50 bg-gray-800 shadow-md px-4 py-3">
   <div class="flex sm:justify-between items-center">
-    <h1 class="text-lg sm:text-xl font-bold hover:rotate-12 transition-transform text-white pr-5">Jam Tangan</h1>
+    <h1 class="text-lg sm:text-xl font-bold hover:rotate-12 transition-transform text-white pr-4">Jam Tangan</h1>
     
     <!-- Tombol menu untuk mobile -->
     <button id="menu-toggle" class="sm:hidden text-white focus:outline-none ml-56">
@@ -83,24 +83,82 @@
       `;
     });
   </script>
-  <div class="flex flex-col w-[350px] h-[250px] bg-gray-700 rounded-xl m-5 items-center">
-  <div class="m-4  relative w-[300px] h-[200px] overflow-hidden rounded-2xl shadow-lg">
-  <div class="slider flex transition-transform duration-700 ease-in-out">
-    <img src="j1.png" class="w-full h-full object-cover flex-shrink-0" />
-    <img src="j2.png" class="w-full h-full object-cover flex-shrink-0" />
-    <img src="j3.jpg" class="w-full h-full object-cover flex-shrink-0" />
+<div class="flex flex-wrap sm:flex-row justify-center items-center gap-4 mt-10">
+  <div class="jam-card flex flex-col w-[350] h-[250] sm:w-[450px] sm:h-[350px]  bg-gray-700 rounded-xl items-center">
+    <div class="m-4 relative w-[300px] h-[200px] sm:w-[400px] sm:h-[270px] overflow-hidden rounded-2xl shadow-lg">
+      <div class="slider flex transition-transform duration-700 ease-in-out">
+        <img src="j1.png" class="w-full h-full object-cover flex-shrink-0" />
+        <img src="j4.jpg" class="w-full h-full object-cover flex-shrink-0" />
+        <img src="j3.jpg" class="w-full h-full object-cover flex-shrink-0" />
+      </div>
+
+      <button class="prev absolute top-1/2 left-2 -translate-y-1/2 bg-sky-400 p-1 sm:p-2 rounded-full hover:bg-gray-900">
+        ◀
+      </button>
+      <button class="next absolute top-1/2 right-2 -translate-y-1/2 bg-sky-400 p-1 sm:p-2 rounded-full hover:bg-gray-900">
+        ▶
+      </button>
+    </div>
+    <p class="text-center font-bold text-lg pb-2">35.000Rp</p>
   </div>
 
-  <!-- Prev / Next Button -->
-  <button id="prev" class="absolute top-1/2 left-2 -translate-y-1/2 bg-sky-400 p-2 rounded-full hover:bg-gray-900">
-    ◀
-  </button>
-  <button id="next" class="absolute top-1/2 right-2 -translate-y-1/2 bg-sky-400 p-2 rounded-full hover:bg-gray-900">
-    ▶
-  </button>
+  <div class="jam-card flex flex-col w-[350] h-[250] sm:w-[450px] sm:h-[350px]  bg-gray-700 rounded-xl items-center">
+    <div class="m-4 relative w-[300px] h-[200px] sm:w-[400px] sm:h-[270px] overflow-hidden rounded-2xl shadow-lg">
+      <div class="slider flex transition-transform duration-700 ease-in-out">
+        <img src="j1.png" class="w-full h-full object-cover flex-shrink-0" />
+        <img src="j4.jpg" class="w-full h-full object-cover flex-shrink-0" />
+        <img src="j3.jpg" class="w-full h-full object-cover flex-shrink-0" />
+      </div>
+
+      <button class="prev absolute top-1/2 left-2 -translate-y-1/2 bg-sky-400 p-1 sm:p-2 rounded-full hover:bg-gray-900">
+        ◀
+      </button>
+      <button class="next absolute top-1/2 right-2 -translate-y-1/2 bg-sky-400 p-1 sm:p-2 rounded-full hover:bg-gray-900">
+        ▶
+      </button>
+    </div>
+    <p class="text-center font-bold text-lg pb-2">35.000Rp</p>
+  </div>
+  <div class="flex flex-wrap justify-center items-center gap-4 mt-10">
+  
+  <div class="jam-card flex flex-col w-[350] h-[250] sm:w-[450px] sm:h-[350px]  bg-gray-700 rounded-xl items-center">
+    <div class="m-4 relative w-[300px] h-[200px] sm:w-[400px] sm:h-[270px] overflow-hidden rounded-2xl shadow-lg">
+      <div class="slider flex transition-transform duration-700 ease-in-out">
+        <img src="j1.png" class="w-full h-full object-cover flex-shrink-0" />
+        <img src="j4.jpg" class="w-full h-full object-cover flex-shrink-0" />
+        <img src="j3.jpg" class="w-full h-full object-cover flex-shrink-0" />
+      </div>
+
+      <button class="prev absolute top-1/2 left-2 -translate-y-1/2 bg-sky-400 p-1 sm:p-2 rounded-full hover:bg-gray-900">
+        ◀
+      </button>
+      <button class="next absolute top-1/2 right-2 -translate-y-1/2 bg-sky-400 p-1 sm:p-2 rounded-full hover:bg-gray-900">
+        ▶
+      </button>
+    </div>
+    <p class="text-center font-bold text-lg pb-2">35.000Rp</p>
+  </div>
+  <div class="jam-card flex flex-col w-[350] h-[250] sm:w-[450px] sm:h-[350px]  bg-gray-700 rounded-xl items-center">
+    <div class="m-4 relative w-[300px] h-[200px] sm:w-[400px] sm:h-[270px] overflow-hidden rounded-2xl shadow-lg">
+      <div class="slider flex transition-transform duration-700 ease-in-out">
+        <img src="j1.png" class="w-full h-full object-cover flex-shrink-0" />
+        <img src="j4.jpg" class="w-full h-full object-cover flex-shrink-0" />
+        <img src="j3.jpg" class="w-full h-full object-cover flex-shrink-0" />
+      </div>
+
+      <button class="prev absolute top-1/2 left-2 -translate-y-1/2 bg-sky-400 p-1 sm:p-2 rounded-full hover:bg-gray-900">
+        ◀
+      </button>
+      <button class="next absolute top-1/2 right-2 -translate-y-1/2 bg-sky-400 p-1 sm:p-2 rounded-full hover:bg-gray-900">
+        ▶
+      </button>
+    </div>
+    <p class="text-center font-bold text-lg pb-2">35.000Rp</p>
+  </div>
+
 </div>
-<p class="text-center font-bold text-lg pb-2">35.000Rp</p>
 </div>
+
 
   <a href="https://wa.me/6283140470146?text=Halo%2C%20saya%20mau%20tanya%20tentang%20produk%20jam%20tangan"
    target="_blank"
@@ -111,34 +169,38 @@
 </a>      
 
   <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
-  <script>
-    AOS.init({
-      duration: 1200,
-      once: false,
-    });
-    const toggle = document.getElementById("menu-toggle");
+<script>
+  AOS.init({
+    duration: 1200,
+    once: false,
+  });
+
+  const toggle = document.getElementById("menu-toggle");
   const menu = document.getElementById("nav-menu");
 
   toggle.addEventListener("click", () => {
     menu.classList.toggle("hidden");
   });
-  const slider = document.querySelector(".slider");
-  const slides = document.querySelectorAll(".slider img");
-  const prevBtn = document.getElementById("prev");
-  const nextBtn = document.getElementById("next");
 
-  let index = 0;
+  // MULTI SLIDER FIX
+  document.querySelectorAll(".jam-card").forEach((card) => {
+    const slider = card.querySelector(".slider");
+    const slides = card.querySelectorAll("img");
+    const prevBtn = card.querySelector(".prev");
+    const nextBtn = card.querySelector(".next");
+    let index = 0;
 
-  function showSlide(i) {
-    index = (i + slides.length) % slides.length;
-    slider.style.transform = `translateX(-${index * 100}%)`;
-  }
+    function showSlide(i) {
+      index = (i + slides.length) % slides.length;
+      slider.style.transform = `translateX(-${index * 100}%)`;
+    }
 
-  nextBtn.addEventListener("click", () => showSlide(index + 1));
-  prevBtn.addEventListener("click", () => showSlide(index - 1));
+    nextBtn.addEventListener("click", () => showSlide(index + 1));
+    prevBtn.addEventListener("click", () => showSlide(index - 1));
 
-  // Auto Slide
-  setInterval(() => showSlide(index + 1), 4000); // Ganti slide tiap 4 detik
+    // Auto Slide per card
+    setInterval(() => showSlide(index + 1), 4000);
+  });
 </script>
 </body>
 </html>
