@@ -1,0 +1,55 @@
+<?php
+include "service/database.php";
+session_start();
+
+$pesan = "";
+
+if (isset($_SESSION["is_login"])) {
+    header("location: dashboard.php");
+    exit;
+}
+if (isset($_POST["register"])) {
+    $username = $_POST["username"];
+    $password = $_POST["password"];
+    $cek = $db->query("SELECT * FROM users WHERE username = '$username'");
+    if ($cek->num_rows > 0) {
+        $pesan = "namanya udh ada yang make";
+    } else {
+        $sql = "INSERT INTO users (username, password) VALUES ('$username', '$password')";
+        if ($db->query($sql)) {
+            $pesan = "Daftar berhasil, silahkan login ya";
+        } else {
+            $pesan = "Terjadi kesalahan saat mendaftar";
+        }
+    }
+    $db->close();
+}
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+    }
+  </style>
+    <title>REGISTER</title>
+</head>
+<body>
+    <?php include "layout/header.html" ?>
+    <h3>DAFTAR AKUN</h3>
+    <i><?= $pesan ?></i>
+    <form action="register.php" method="POST">
+        <input type="text" placeholder="username" name="username" required/><br>
+        <input type="text" placeholder="password" name="password" required/><br>
+        <button type="submit" name="register">Daftar Sekarang</button>
+    </form>
+    <?php include "layout/footer.html" ?>
+</body>
+</html>
