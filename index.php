@@ -17,11 +17,12 @@
     <?php include "layout/header.html" ?>
 
     <main>
-        <p class="font-bold italic text-xl">Halo silahkan login ya</p>
-        <p class="font-bold text-xl italic">Belum punya akun <a href="register.php" class="font-bold text-lg hover:text-blue-500">Daftar</a></p>
+        <p class="font-bold italic text-xl flex justify-center ">Halo silahkan login ya</p>
+        <p class="font-bold text-xl italic flex justify-center">Belum punya akun <a href="register.php" class="font-bold text-lg hover:text-blue-500 ml-1">Daftar</a></p>
     </main>
-    <button class="p-3 pr-7 pl-7 bg-red-500 font-bold text-xl ml-10 mt-4 rounded-full hover:bg-red-300"><a href="login.php">Login</a></button>
-
+    <div class="flex justify-center items center">
+    <button class="p-3 pr-7 pl-7 bg-red-500 font-bold text-xl mt-4 rounded-full hover:bg-red-300"><a href="login.php">Login</a></button>
+    </div>
      <?php include "layout/footer.html" ?>
 </body>
 </html>

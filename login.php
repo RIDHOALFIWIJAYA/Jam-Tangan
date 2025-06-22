@@ -49,13 +49,17 @@ if (isset($_POST["login"])) {
 </head>
 <body>
      <?php include "layout/header.html" ?>
-    <h3>MASUK</h3>
+     <div class="flex flex-col justify-center items-center">
+    <div class="flex-col bg-red-400 p-5 mt-44 rounded-xl">
+    <h3 class="font-bold text-2xl">MASUK</h3>
      <i><?= $pesan ?></i>
     <form action="login.php" method="POST">
-        <input type="text" placeholder="username" name="username"/><br>
-        <input type="text" placeholder="password" name="password"/><br>
-        <button type="submit" name="login">LOGIN SEKARANG</button>
+        <input type="text" placeholder="username" name="username" class="rounded-xl p-2"/><br>
+        <input type="text" placeholder="password" name="password" class="mt-3 rounded-xl p-2"/><br>
+        <button type="submit" name="login" class="mt-3 p-2 pl-4 pr-4 font-bold bg-sky-300 rounded-full hover:bg-sky-500">LOGIN SEKARANG</button>
     </form>
+    </div>
+    </div>
      <?php include "layout/footer.html" ?>
 </body>
 </html>

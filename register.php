@@ -43,13 +43,17 @@ if (isset($_POST["register"])) {
 </head>
 <body>
     <?php include "layout/header.html" ?>
-    <h3>DAFTAR AKUN</h3>
+    <div class="flex flex-col justify-center items-center">
+    <div class="flex-col bg-red-400 p-5 mt-44 rounded-xl">
+    <h3 class="font-bold text-2xl">DAFTAR AKUN</h3>
     <i><?= $pesan ?></i>
-    <form action="register.php" method="POST">
-        <input type="text" placeholder="username" name="username" required/><br>
-        <input type="text" placeholder="password" name="password" required/><br>
-        <button type="submit" name="register">Daftar Sekarang</button>
+    <form action="register.php" method="POST" class="mt-3">
+        <input type="text" placeholder="username" name="username" class="rounded-xl p-2" required/><br>
+        <input type="text" placeholder="password" name="password" class="mt-3 rounded-xl p-2" required/><br>
+        <button type="submit" name="register" class="mt-3 p-2 pl-4 pr-4 font-bold bg-sky-300 rounded-full hover:bg-sky-500">Daftar Sekarang</button>
     </form>
+    </div>
+    </div>
     <?php include "layout/footer.html" ?>
 </body>
 </html>
