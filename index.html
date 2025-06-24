@@ -17,9 +17,9 @@
 <body class="bg-gray-800 text-white">
 
 <header class="fixed top-0 w-full z-50 bg-gray-800 shadow-md px-4 py-2">
-  <div class="flex sm:justify-between items-center">
+  <div class="flex justify-between items-center">
     <h1 class="text-lg sm:text-xl font-bold hover:rotate-12 transition-transform text-white pr-4">JamKu</h1>
-    <button id="menu-toggle" class="sm:hidden text-white focus:outline-none ml-56">
+    <button id="menu-toggle" class="sm:hidden text-white focus:outline-none">
       <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none"
            viewBox="0 0 24 24" stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -30,6 +30,7 @@
       <ul class="flex flex-col sm:flex-row gap-4 px-4 py-2 sm:p-5 sm:font-bold">
         <li><a href="index.html" class="hover:text-blue-400 transition">Home</a></li>
         <li><a href="produk.html" class="hover:text-blue-400 transition">Lihat produk</a></li>
+         <li><a href="#" class="hover:text-blue-400 transition">Login & register</a></li>
       </ul>
     </nav>
   </div>
@@ -70,9 +71,16 @@
 
     produk.forEach((item, index) => {
       container.innerHTML += `
-        <div class="bg-white rounded-2xl shadow-md overflow-hidden" data-aos="${index % 2 === 0 ? 'fade-left' : 'fade-right'}">
-          <img src="${item.gambar}" alt="${item.nama}" class="w-full h-48 object-cover" />
+        <div class="bg-white rounded-2xl shadow-md overflow-hidden" data-aos="fade-right">
+          <div class="relative group">
+            <img src="${item.gambar}" alt="${item.nama}" class="w-full h-48 object-cover" />
+              <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition flex flex-col justify-center items-center text-white">
+            <p class="text-lg font-semibold">${item.nama}</p>
+              <button class="mt-2 bg-blue-500 px-4 py-1 rounded">Lihat</button>
+              </div>
+          </div>
           <div class="p-3">
+            </div>
             <p class="text-center text-lg font-bold text-gray-800 mb-2">${item.nama}</p>
             <a href="detail.html?id=jam${index + 1}" class="block w-full text-center py-2 bg-blue-600 text-white rounded hover:translate-y-1 transition">Beli</a>
           </div>
@@ -152,8 +160,16 @@
     </div>
     <p class="text-center font-bold text-lg pb-2">35.000Rp</p>
   </div>
-
 </div>
+</div>
+<div class="columns-2 md:columns-3 gap-4 m-8">
+  <img src="j1.png" class="mb-4 rounded-lg w-full" />
+  <img src="j4.jpg" class="mb-4 rounded-lg w-full" />
+  <img src="j2.png" class="mb-4 rounded-lg w-full" />
+  <img src="j3.jpg" class="mb-4 rounded-lg w-full" />
+  <img src="j4.jpg" class="mb-4 rounded-lg w-full" />
+  
+  <!-- dst -->
 </div>
 
 
