@@ -12,13 +12,14 @@
     }
   </style>
   <meta name="google-site-verification" content="HPFckSeSey5ojpgzuzYcYV4JxLGWIhfX52s3iUvSr_A" />
-  <title>Jam Tangan</title>
+  <link rel="icon" href="Jamlo.png" type="image/png">
+  <title>JamLo</title>
 </head>
 <body class="bg-gray-800 text-white">
 
 <header class="fixed top-0 w-full z-50 bg-gray-800 shadow-md px-4 py-2">
   <div class="flex justify-between items-center">
-    <h1 class="text-lg sm:text-xl font-bold hover:rotate-12 transition-transform text-white pr-4">JamKu</h1>
+    <h1 class="text-lg sm:text-xl font-bold hover:rotate-12 transition-transform text-white pr-4">JamLo</h1>
     <button id="menu-toggle" class="sm:hidden text-white focus:outline-none">
       <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none"
            viewBox="0 0 24 24" stroke="currentColor">
@@ -30,18 +31,17 @@
       <ul class="flex flex-col sm:flex-row gap-4 px-4 py-2 sm:p-5 sm:font-bold">
         <li><a href="index.html" class="hover:text-blue-400 transition">Home</a></li>
         <li><a href="produk.html" class="hover:text-blue-400 transition">Lihat produk</a></li>
-         <li><a href="#" class="hover:text-blue-400 transition">Login & register</a></li>
       </ul>
     </nav>
   </div>
 </header>
 
-
+ 
   <section class="mt-20 sm:mt-24 min-h-[100vh] flex items-center justify-center bg-[url('jam1.jpg')] bg-cover bg-center relative">
     <div class="absolute inset-0 bg-black/60"></div>
     <div class="relative  max-w-2xl text-center px-4">
       <h1 class="text-3xl sm:text-5xl sm:pb-3 font-extrabold bg-gradient-to-r from-white to-gray-300 text-transparent bg-clip-text mb-4" data-aos="fade-up">
-        Selamat datang di JamKu
+        Selamat datang di JamLo
       </h1>
       <p class="text-base sm:text-xl font-medium text-white" data-aos="fade-right">
         Menyediakan jam tangan murah, berkualitas, dan keren.<br>
@@ -51,20 +51,19 @@
   </section>
 
   <section class="px-4 py-10">
-    <div id="produk-list" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6"></div>
+    <div id="produk-list" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"></div>
   </section>
+  <h2 class="text-3xl sm:text-5xl sm:pb-3 ml-4 font-extrabold border-l-8 border-blue-500 pl-4"data-aos="fade-right">Sekilas produk kami</h2>
   <script>
     const produk = [
-      { nama: "Jam Sport", gambar: "j1.png", link: "#" },
-      { nama: "Jam Elegan", gambar: "j2.png", link: "#" },
-      { nama: "Jam Digital", gambar: "j3.jpg", link: "#" },
-      { nama: "Jam Casual", gambar: "j4.jpg", link: "#" },
-      { nama: "Jam Klasik", gambar: "j1.png", link: "#" },
-      { nama: "Jam Modern", gambar: "j1.png", link: "#" },
-      { nama: "Jam Pria", gambar: "j1.png", link: "#" },
-      { nama: "Jam Wanita", gambar: "j1.png", link: "#" },
-      { nama: "Jam Premium", gambar: "j1.png", link: "#" },
-      { nama: "Jam Anak", gambar: "j1.png", link: "#" }
+      { nama: "Sport biasa", gambar: "./src/digital/digital1.jpg", link: "produk.html" },
+      { nama: "Sport biasa", gambar: "./src/digital/digital2.jpg", link: "produk.html" },
+      { nama: "Harxyson",      gambar: "./src/digital/digital3.jpg", link: "produk.html" },
+      { nama: "Analog biasa", gambar: "./src/analog/analog3.jpg", link: "produk.html" },
+      { nama: "Analog biasa", gambar: "./src/analog/analog5.jpg", link: "produk.html" },
+      { nama: "Analog biasa", gambar: "./src/analog/analog4.jpg", link: "produk.html" },
+      { nama: "Analog biasa", gambar: "./src/analog/analog7.jpg", link: "produk.html" },
+      { nama: "Analog biasa", gambar: "./src/analog/analog8.jpg", link: "produk.html" },
     ];
 
     const container = document.getElementById("produk-list");
@@ -73,10 +72,10 @@
       container.innerHTML += `
         <div class="bg-white rounded-2xl shadow-md overflow-hidden" data-aos="fade-right">
           <div class="relative group">
-            <img src="${item.gambar}" alt="${item.nama}" class="w-full h-48 object-cover" />
+            <img src="${item.gambar}" alt="${item.nama}" class="w-full h-472 object-cover" />
               <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition flex flex-col justify-center items-center text-white">
             <p class="text-lg font-semibold">${item.nama}</p>
-              <button class="mt-2 bg-blue-500 px-4 py-1 rounded">Lihat</button>
+              <a href="${item.link}" /a><button class="mt-2 bg-blue-500 px-4 py-1 rounded">Lihat</button>
               </div>
           </div>
           <div class="p-3">
@@ -104,7 +103,7 @@
         ▶
       </button>
     </div>
-    <p class="text-center font-bold text-lg pb-2">35.000Rp</p>
+    <p class="text-center font-bold text-lg pb-2">Harga:?</p>
   </div>
 
   <div class="jam-card flex flex-col w-[350] h-[250] sm:w-[450px] sm:h-[350px]  bg-gray-700 rounded-xl items-center">
@@ -122,7 +121,7 @@
         ▶
       </button>
     </div>
-    <p class="text-center font-bold text-lg pb-2">35.000Rp</p>
+    <p class="text-center font-bold text-lg pb-2">Harga:?</p>
   </div>
   <div class="flex flex-wrap justify-center items-center gap-4 mt-10">
   
@@ -141,7 +140,7 @@
         ▶
       </button>
     </div>
-    <p class="text-center font-bold text-lg pb-2">35.000Rp</p>
+    <p class="text-center font-bold text-lg pb-2">Harga:?</p>
   </div>
   <div class="jam-card flex flex-col w-[350] h-[250] sm:w-[450px] sm:h-[350px]  bg-gray-700 rounded-xl items-center">
     <div class="m-4 relative w-[300px] h-[200px] sm:w-[400px] sm:h-[270px] overflow-hidden rounded-2xl shadow-lg">
@@ -158,7 +157,7 @@
         ▶
       </button>
     </div>
-    <p class="text-center font-bold text-lg pb-2">35.000Rp</p>
+    <p class="text-center font-bold text-lg pb-2">Harga?</p>
   </div>
 </div>
 </div>
@@ -172,14 +171,131 @@
   <!-- dst -->
 </div>
 
+<!-- Container 2 -->
+<section class="container mx-auto p-6 grid grid-cols-3 gap-6">
+  <!-- Kolom kiri -->
+  <div class="col-span-2">
+    <p class="text-gray-700">
+      Lorem ipsum dolor sit amet consectetur adipisicing elit. Exercitationem id quae, inventore totam optio molestias nulla ipsam fugiat ducimus nihil ullam repellat nemo aut. Dolores maiores laboriosam qui ex harum dicta officiis error quae commodi eveniet fuga, accusantium quam amet cumque. Illo cupiditate, possimus nisi quasi dignissimos sit commodi odio?
+    </p>
+  </div>
+
+  <!-- Kolom kanan (cards) -->
+  <div class="space-y-4">
+    <!-- Card 1 -->
+    <div class="bg-white p-3 shadow rounded-xl flex flex-col items-center">
+      <img src="./src/analog/analog1.jpg"
+           alt="Produk 1"
+           class="w-full h-[350px] object-cover rounded-lg mb-3" />
+      <h3 class="font-semibold">Jam Elegan</h3>
+      <p class="text-gray-600">Jam Analog</p>
+    </div>
+
+    <!-- Card 2 -->
+    <div class="bg-white p-3 shadow rounded-xl flex flex-col items-center">
+      <img src="./src/digital/digital1.jpg"
+           alt="Produk 1"
+           class="w-full h-[350px] object-cover rounded-lg mb-3" />
+      <h3 class="font-semibold">Jam Sporty</h3>
+      <p class="text-gray-600">Jam Digital</p>
+    </div>
+  </div>
+</section>
+
+<!-- Baris card -->
+<section class="container mx-auto p-6 grid grid-cols-4 gap-4">
+  <div class="bg-white p-4 shadow rounded-xl flex flex-col items-center">
+    <img src="j1.png" alt="Card A" class="w-full h-32 object-cover rounded-lg mb-2">
+    <p class="font-medium">Produk A</p>
+    <span class="text-sm text-gray-600">Pria</span>
+  </div>
+
+  <div class="bg-white p-4 shadow rounded-xl flex flex-col items-center">
+    <img src="j2.png" alt="Card B" class="w-full h-32 object-cover rounded-lg mb-2">
+    <p class="font-medium">Produk B</p>
+    <span class="text-sm text-gray-600">Wanita</span>
+  </div>
+
+  <div class="bg-white p-4 shadow rounded-xl flex flex-col items-center">
+    <img src="j3.jpg" alt="Card C" class="w-full h-32 object-cover rounded-lg mb-2">
+    <p class="font-medium">Produk C</p>
+    <span class="text-sm text-gray-600">Anak-anak</span>
+  </div>
+
+  <div class="bg-white p-4 shadow rounded-xl flex flex-col items-center">
+    <img src="j4.jpg" alt="Card D" class="w-full h-32 object-cover rounded-lg mb-2">
+    <p class="font-medium">Produk D</p>
+    <span class="text-sm text-gray-600">Keduanya</span>
+  </div>
+</section>
+
 
   <a href="https://wa.me/6283140470146?text=Halo%2C%20saya%20mau%20tanya%20tentang%20produk%20jam%20tangan"
    target="_blank"
-   class="fixed bottom-4 sm:right-4 bg-green-500 hover:bg-green-600 text-white p-3 rounded-full shadow-lg z-50">
+   class="fixed bottom-4 sm:right-4 bg-green-500 hover:bg-green-600 text-white p-3 rounded-full shadow-lg z-40">
   <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
     <path d="M20.52 3.48A11.95 11.95 0 0012 0C5.37 0 .01 5.37 0 12a11.94 11.94 0 001.68 6.11L0 24l6.06-1.62A11.94 11.94 0 0012 24c6.63 0 12-5.37 12-12a11.95 11.95 0 00-3.48-8.52zM12 22c-1.91 0-3.77-.5-5.4-1.46l-.38-.22-3.6.96.96-3.6-.22-.38A9.97 9.97 0 012 12c0-5.52 4.48-10 10-10s10 4.48 10 10-4.48 10-10 10zm5.25-7.5l-1.48-.38a.96.96 0 00-.96.25l-.7.72a7.48 7.48 0 01-3.54-3.54l.72-.7a.96.96 0 00.25-.96l-.38-1.48a.96.96 0 00-.91-.68h-2a.96.96 0 00-.96.96c0 5.04 4.08 9.12 9.12 9.12.53 0 .96-.43.96-.96v-2a.96.96 0 00-.68-.91z"/>
   </svg>
-</a>      
+</a>    
+
+<!-- Tombol -->
+<button id="openModal"
+  class="px-5 py-2 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 transition z-50 w-auto
+         fixed bottom-4 right-4 sm:bottom-4 sm:right-4 sm:mr-[1110px]">
+  Lihat produk lainnya
+</button>
+
+<!-- Modal -->
+<div id="modal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50">
+  <div class="bg-white rounded-2xl shadow-xl w-11/12 sm:w-1/2 p-6 relative text-gray-800">
+    
+    <!-- Tombol Close -->
+    <button id="closeModal" class="absolute top-3 right-3 text-gray-500 hover:text-gray-800 text-xl font-bold">
+      ✖
+    </button>
+
+    <h2 class="text-2xl font-bold mb-4 text-center">Produk Lainnya</h2>
+    <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
+      <div class="bg-gray-100 p-3 rounded-lg shadow text-center">
+        <img src="j1.png" class="w-full h-24 object-cover rounded mb-2">
+        <p class="font-semibold">Jam Classic</p>
+      </div>
+      <div class="bg-gray-100 p-3 rounded-lg shadow text-center">
+        <img src="j2.png" class="w-full h-24 object-cover rounded mb-2">
+        <p class="font-semibold">Jam Digital</p>
+      </div>
+      <div class="bg-gray-100 p-3 rounded-lg shadow text-center">
+        <img src="j3.jpg" class="w-full h-24 object-cover rounded mb-2">
+        <p class="font-semibold">Jam Sport</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const modal = document.getElementById("modal");
+  const openModal = document.getElementById("openModal");
+  const closeModal = document.getElementById("closeModal");
+
+  openModal.addEventListener("click", () => {
+    modal.classList.remove("hidden");
+    modal.classList.add("flex");
+  });
+
+  closeModal.addEventListener("click", () => {
+    modal.classList.add("hidden");
+    modal.classList.remove("flex");
+  });
+
+  // Biar kalau klik area luar modal juga nutup
+  modal.addEventListener("click", (e) => {
+    if (e.target === modal) {
+      modal.classList.add("hidden");
+      modal.classList.remove("flex");
+    }
+  });
+</script>
+
 
   <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
 <script>
