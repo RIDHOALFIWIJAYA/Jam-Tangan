@@ -1,335 +1,132 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet" />
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
-  <style>
-    body {
-      font-family: 'Poppins', sans-serif;
-    }
-  </style>
-  <meta name="google-site-verification" content="HPFckSeSey5ojpgzuzYcYV4JxLGWIhfX52s3iUvSr_A" />
-  <link rel="icon" href="Jamlo.png" type="image/png">
-  <title>JamLo</title>
-</head>
-<body class="bg-gray-800 text-white">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JamLo Premium</title>
 
-<header class="fixed top-0 w-full z-50 bg-gray-800 shadow-md px-4 py-2">
-  <div class="flex justify-between items-center">
-    <h1 class="text-lg sm:text-xl font-bold hover:rotate-12 transition-transform text-white pr-4">JamLo</h1>
-    <button id="menu-toggle" class="sm:hidden text-white focus:outline-none">
-      <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none"
-           viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M4 6h16M4 12h16M4 18h16" />
-      </svg>
-    </button>
-    <nav id="nav-menu" class="hidden sm:flex flex-col sm:flex-row absolute sm:static top-full left-0 w-full sm:w-auto bg-gray-800 sm:bg-transparent text-white sm:text-inherit sm:mt-0 sm:items-center sm:gap-4 text-sm sm:text-lg font-medium">
-      <ul class="flex flex-col sm:flex-row gap-4 px-4 py-2 sm:p-5 sm:font-bold">
-        <li><a href="index.html" class="hover:text-blue-400 transition">Home</a></li>
-        <li><a href="produk.html" class="hover:text-blue-400 transition">Lihat produk</a></li>
-      </ul>
-    </nav>
-  </div>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet"/>
+
+  <style>
+    body { font-family: 'Poppins', sans-serif; }
+  </style>
+</head>
+
+<body class="bg-[#0a0a0a] text-white">
+
+<!-- NAVBAR -->
+<header class="fixed top-0 w-full bg-black/40 backdrop-blur-xl border-b border-white/10 z-50 px-6 py-3 flex justify-between items-center">
+  <h1 class="text-xl font-bold tracking-widest">JamLo</h1>
+  <a href="produk.html" class="px-4 py-2 bg-white/10 border border-white/20 rounded-lg hover:bg-white/20 transition">
+    Produk
+  </a>
 </header>
 
- 
-  <section class="mt-20 sm:mt-24 min-h-[100vh] flex items-center justify-center bg-[url('jam1.jpg')] bg-cover bg-center relative">
-    <div class="absolute inset-0 bg-black/60"></div>
-    <div class="relative  max-w-2xl text-center px-4">
-      <h1 class="text-3xl sm:text-5xl sm:pb-3 font-extrabold bg-gradient-to-r from-white to-gray-300 text-transparent bg-clip-text mb-4" data-aos="fade-up">
-        Selamat datang di JamLo
-      </h1>
-      <p class="text-base sm:text-xl font-medium text-white" data-aos="fade-right">
-        Menyediakan jam tangan murah, berkualitas, dan keren.<br>
-        <p class="text base sm:text-xl font-bold italic" data-aos="fade-up">Waktu, gaya, dan kamu</p>
-      </p>
-    </div>
-  </section>
-
-  <section class="px-4 py-10">
-    <div id="produk-list" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"></div>
-  </section>
-  <h2 class="text-3xl sm:text-5xl sm:pb-3 ml-4 font-extrabold border-l-8 border-blue-500 pl-4"data-aos="fade-right">Sekilas produk kami</h2>
-  <script>
-    const produk = [
-      { nama: "Sport biasa", gambar: "./src/digital/digital1.jpg", link: "produk.html" },
-      { nama: "Sport biasa", gambar: "./src/digital/digital2.jpg", link: "produk.html" },
-      { nama: "Harxyson",      gambar: "./src/digital/digital3.jpg", link: "produk.html" },
-      { nama: "Analog biasa", gambar: "./src/analog/analog3.jpg", link: "produk.html" },
-      { nama: "Analog biasa", gambar: "./src/analog/analog5.jpg", link: "produk.html" },
-      { nama: "Analog biasa", gambar: "./src/analog/analog4.jpg", link: "produk.html" },
-      { nama: "Analog biasa", gambar: "./src/analog/analog7.jpg", link: "produk.html" },
-      { nama: "Analog biasa", gambar: "./src/analog/analog8.jpg", link: "produk.html" },
-    ];
-
-    const container = document.getElementById("produk-list");
-
-    produk.forEach((item, index) => {
-      container.innerHTML += `
-        <div class="bg-white rounded-2xl shadow-md overflow-hidden" data-aos="fade-right">
-          <div class="relative group">
-            <img src="${item.gambar}" alt="${item.nama}" class="w-full h-472 object-cover" />
-              <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition flex flex-col justify-center items-center text-white">
-            <p class="text-lg font-semibold">${item.nama}</p>
-              <a href="${item.link}" /a><button class="mt-2 bg-blue-500 px-4 py-1 rounded">Lihat</button>
-              </div>
-          </div>
-          <div class="p-3">
-            </div>
-            <p class="text-center text-lg font-bold text-gray-800 mb-2">${item.nama}</p>
-            <a href="detail.html?id=jam${index + 1}" class="block w-full text-center py-2 bg-blue-600 text-white rounded hover:translate-y-1 transition">Beli</a>
-          </div>
-        </div>
-      `;
-    });
-  </script>
-<div class="flex flex-wrap sm:flex-row justify-center items-center gap-4 mt-10">
-  <div class="jam-card flex flex-col w-[350] h-[250] sm:w-[450px] sm:h-[350px]  bg-gray-700 rounded-xl items-center">
-    <div class="m-4 relative w-[300px] h-[200px] sm:w-[400px] sm:h-[270px] overflow-hidden rounded-2xl shadow-lg">
-      <div class="slider flex transition-transform duration-700 ease-in-out">
-        <img src="j1.png" class="w-full h-full object-cover flex-shrink-0" />
-        <img src="j4.jpg" class="w-full h-full object-cover flex-shrink-0" />
-        <img src="j3.jpg" class="w-full h-full object-cover flex-shrink-0" />
-      </div>
-
-      <button class="prev absolute top-1/2 left-2 -translate-y-1/2 bg-sky-400 p-1 sm:p-2 rounded-full hover:bg-gray-900">
-        ◀
-      </button>
-      <button class="next absolute top-1/2 right-2 -translate-y-1/2 bg-sky-400 p-1 sm:p-2 rounded-full hover:bg-gray-900">
-        ▶
-      </button>
-    </div>
-    <p class="text-center font-bold text-lg pb-2">Harga:?</p>
-  </div>
-
-  <div class="jam-card flex flex-col w-[350] h-[250] sm:w-[450px] sm:h-[350px]  bg-gray-700 rounded-xl items-center">
-    <div class="m-4 relative w-[300px] h-[200px] sm:w-[400px] sm:h-[270px] overflow-hidden rounded-2xl shadow-lg">
-      <div class="slider flex transition-transform duration-700 ease-in-out">
-        <img src="j1.png" class="w-full h-full object-cover flex-shrink-0" />
-        <img src="j4.jpg" class="w-full h-full object-cover flex-shrink-0" />
-        <img src="j3.jpg" class="w-full h-full object-cover flex-shrink-0" />
-      </div>
-
-      <button class="prev absolute top-1/2 left-2 -translate-y-1/2 bg-sky-400 p-1 sm:p-2 rounded-full hover:bg-gray-900">
-        ◀
-      </button>
-      <button class="next absolute top-1/2 right-2 -translate-y-1/2 bg-sky-400 p-1 sm:p-2 rounded-full hover:bg-gray-900">
-        ▶
-      </button>
-    </div>
-    <p class="text-center font-bold text-lg pb-2">Harga:?</p>
-  </div>
-  <div class="flex flex-wrap justify-center items-center gap-4 mt-10">
+<!-- HERO -->
+<section class="relative h-screen flex items-center justify-center text-center overflow-hidden">
   
-  <div class="jam-card flex flex-col w-[350] h-[250] sm:w-[450px] sm:h-[350px]  bg-gray-700 rounded-xl items-center">
-    <div class="m-4 relative w-[300px] h-[200px] sm:w-[400px] sm:h-[270px] overflow-hidden rounded-2xl shadow-lg">
-      <div class="slider flex transition-transform duration-700 ease-in-out">
-        <img src="j1.png" class="w-full h-full object-cover flex-shrink-0" />
-        <img src="j4.jpg" class="w-full h-full object-cover flex-shrink-0" />
-        <img src="j3.jpg" class="w-full h-full object-cover flex-shrink-0" />
-      </div>
+  <img src="jam1.jpg" class="absolute w-full h-full object-cover opacity-100">
 
-      <button class="prev absolute top-1/2 left-2 -translate-y-1/2 bg-sky-400 p-1 sm:p-2 rounded-full hover:bg-gray-900">
-        ◀
-      </button>
-      <button class="next absolute top-1/2 right-2 -translate-y-1/2 bg-sky-400 p-1 sm:p-2 rounded-full hover:bg-gray-900">
-        ▶
-      </button>
-    </div>
-    <p class="text-center font-bold text-lg pb-2">Harga:?</p>
-  </div>
-  <div class="jam-card flex flex-col w-[350] h-[250] sm:w-[450px] sm:h-[350px]  bg-gray-700 rounded-xl items-center">
-    <div class="m-4 relative w-[300px] h-[200px] sm:w-[400px] sm:h-[270px] overflow-hidden rounded-2xl shadow-lg">
-      <div class="slider flex transition-transform duration-700 ease-in-out">
-        <img src="j1.png" class="w-full h-full object-cover flex-shrink-0" />
-        <img src="j4.jpg" class="w-full h-full object-cover flex-shrink-0" />
-        <img src="j3.jpg" class="w-full h-full object-cover flex-shrink-0" />
-      </div>
+  <div class="absolute inset-0 bg-gradient-to-b from-black via-black/80 to-black"></div>
 
-      <button class="prev absolute top-1/2 left-2 -translate-y-1/2 bg-sky-400 p-1 sm:p-2 rounded-full hover:bg-gray-900">
-        ◀
-      </button>
-      <button class="next absolute top-1/2 right-2 -translate-y-1/2 bg-sky-400 p-1 sm:p-2 rounded-full hover:bg-gray-900">
-        ▶
-      </button>
-    </div>
-    <p class="text-center font-bold text-lg pb-2">Harga?</p>
-  </div>
-</div>
-</div>
-<div class="columns-2 md:columns-3 gap-4 m-8">
-  <img src="j1.png" class="mb-4 rounded-lg w-full" />
-  <img src="j4.jpg" class="mb-4 rounded-lg w-full" />
-  <img src="j2.png" class="mb-4 rounded-lg w-full" />
-  <img src="j3.jpg" class="mb-4 rounded-lg w-full" />
-  <img src="j4.jpg" class="mb-4 rounded-lg w-full" />
-  
-  <!-- dst -->
-</div>
+  <!-- Glow -->
+  <div class="absolute w-[400px] h-[400px] bg-blue-500/20 blur-[100px] rounded-full top-20"></div>
 
-<!-- Container 2 -->
-<section class="container mx-auto p-6 grid grid-cols-3 gap-6">
-  <!-- Kolom kiri -->
-  <div class="col-span-2">
-    <p class="text-gray-700">
-      Lorem ipsum dolor sit amet consectetur adipisicing elit. Exercitationem id quae, inventore totam optio molestias nulla ipsam fugiat ducimus nihil ullam repellat nemo aut. Dolores maiores laboriosam qui ex harum dicta officiis error quae commodi eveniet fuga, accusantium quam amet cumque. Illo cupiditate, possimus nisi quasi dignissimos sit commodi odio?
+  <div class="relative z-10 px-6">
+    <h1 class="text-5xl sm:text-7xl font-extrabold mb-6 leading-tight" data-aos="fade-up">
+      Elevate Your Style ⌚
+    </h1>
+
+    <p class="text-gray-400 max-w-xl mx-auto mb-8" data-aos="fade-up">
+      Jam tangan premium dengan desain elegan, dibuat untuk kamu yang ingin tampil beda.
     </p>
-  </div>
 
-  <!-- Kolom kanan (cards) -->
-  <div class="space-y-4">
-    <!-- Card 1 -->
-    <div class="bg-white p-3 shadow rounded-xl flex flex-col items-center">
-      <img src="./src/analog/analog1.jpg"
-           alt="Produk 1"
-           class="w-full h-[350px] object-cover rounded-lg mb-3" />
-      <h3 class="font-semibold">Jam Elegan</h3>
-      <p class="text-gray-600">Jam Analog</p>
-    </div>
-
-    <!-- Card 2 -->
-    <div class="bg-white p-3 shadow rounded-xl flex flex-col items-center">
-      <img src="./src/digital/digital1.jpg"
-           alt="Produk 1"
-           class="w-full h-[350px] object-cover rounded-lg mb-3" />
-      <h3 class="font-semibold">Jam Sporty</h3>
-      <p class="text-gray-600">Jam Digital</p>
-    </div>
+    <a href="produk.html"
+       class="px-8 py-4 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-xl text-lg shadow-lg hover:scale-105 transition">
+      Explore Now
+    </a>
   </div>
 </section>
 
-<!-- Baris card -->
-<section class="container mx-auto p-6 grid grid-cols-4 gap-4">
-  <div class="bg-white p-4 shadow rounded-xl flex flex-col items-center">
-    <img src="j1.png" alt="Card A" class="w-full h-32 object-cover rounded-lg mb-2">
-    <p class="font-medium">Produk A</p>
-    <span class="text-sm text-gray-600">Pria</span>
-  </div>
+<!-- PRODUK -->
+<section id="produk" class="px-8 py-16">
+  <h2 class="text-4xl font-bold text-center mb-12">Featured Collection</h2>
 
-  <div class="bg-white p-4 shadow rounded-xl flex flex-col items-center">
-    <img src="j2.png" alt="Card B" class="w-full h-32 object-cover rounded-lg mb-2">
-    <p class="font-medium">Produk B</p>
-    <span class="text-sm text-gray-600">Wanita</span>
-  </div>
-
-  <div class="bg-white p-4 shadow rounded-xl flex flex-col items-center">
-    <img src="j3.jpg" alt="Card C" class="w-full h-32 object-cover rounded-lg mb-2">
-    <p class="font-medium">Produk C</p>
-    <span class="text-sm text-gray-600">Anak-anak</span>
-  </div>
-
-  <div class="bg-white p-4 shadow rounded-xl flex flex-col items-center">
-    <img src="j4.jpg" alt="Card D" class="w-full h-32 object-cover rounded-lg mb-2">
-    <p class="font-medium">Produk D</p>
-    <span class="text-sm text-gray-600">Keduanya</span>
-  </div>
+  <div id="produk-list" class="grid sm:grid-cols-2 md:grid-cols-3 gap-10"></div>
 </section>
 
+<!-- KEUNGGULAN -->
+<section class="px-8 py-16 bg-[#111]">
+  <h2 class="text-4xl text-center font-bold mb-12">Why Choose Us?</h2>
 
-  <a href="https://wa.me/6283140470146?text=Halo%2C%20saya%20mau%20tanya%20tentang%20produk%20jam%20tangan"
-   target="_blank"
-   class="fixed bottom-4 sm:right-4 bg-green-500 hover:bg-green-600 text-white p-3 rounded-full shadow-lg z-40">
-  <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-    <path d="M20.52 3.48A11.95 11.95 0 0012 0C5.37 0 .01 5.37 0 12a11.94 11.94 0 001.68 6.11L0 24l6.06-1.62A11.94 11.94 0 0012 24c6.63 0 12-5.37 12-12a11.95 11.95 0 00-3.48-8.52zM12 22c-1.91 0-3.77-.5-5.4-1.46l-.38-.22-3.6.96.96-3.6-.22-.38A9.97 9.97 0 012 12c0-5.52 4.48-10 10-10s10 4.48 10 10-4.48 10-10 10zm5.25-7.5l-1.48-.38a.96.96 0 00-.96.25l-.7.72a7.48 7.48 0 01-3.54-3.54l.72-.7a.96.96 0 00.25-.96l-.38-1.48a.96.96 0 00-.91-.68h-2a.96.96 0 00-.96.96c0 5.04 4.08 9.12 9.12 9.12.53 0 .96-.43.96-.96v-2a.96.96 0 00-.68-.91z"/>
-  </svg>
-</a>    
-
-<!-- Tombol -->
-<button id="openModal"
-  class="px-5 py-2 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 transition z-50 w-auto
-         fixed bottom-4 right-4 sm:bottom-4 sm:right-4 sm:mr-[1110px]">
-  Lihat produk lainnya
-</button>
-
-<!-- Modal -->
-<div id="modal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50">
-  <div class="bg-white rounded-2xl shadow-xl w-11/12 sm:w-1/2 p-6 relative text-gray-800">
+  <div class="grid sm:grid-cols-3 gap-8 text-center">
     
-    <!-- Tombol Close -->
-    <button id="closeModal" class="absolute top-3 right-3 text-gray-500 hover:text-gray-800 text-xl font-bold">
-      ✖
-    </button>
+    <div class="p-8 rounded-2xl bg-white/5 border border-white/10 backdrop-blur hover:scale-105 transition">
+      💎
+      <p class="mt-4 font-semibold text-lg">Premium Quality</p>
+    </div>
 
-    <h2 class="text-2xl font-bold mb-4 text-center">Produk Lainnya</h2>
-    <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
-      <div class="bg-gray-100 p-3 rounded-lg shadow text-center">
-        <img src="j1.png" class="w-full h-24 object-cover rounded mb-2">
-        <p class="font-semibold">Jam Classic</p>
+    <div class="p-8 rounded-2xl bg-white/5 border border-white/10 backdrop-blur hover:scale-105 transition">
+      🚚
+      <p class="mt-4 font-semibold text-lg">Fast Delivery</p>
+    </div>
+
+    <div class="p-8 rounded-2xl bg-white/5 border border-white/10 backdrop-blur hover:scale-105 transition">
+      💰
+      <p class="mt-4 font-semibold text-lg">Affordable Price</p>
+    </div>
+
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="px-8 py-20 text-center">
+  <h2 class="text-4xl font-bold mb-4">Ready to Upgrade?</h2>
+  <p class="text-gray-400 mb-8">Klik sekarang dan miliki jam impianmu 🔥</p>
+
+  <a href="https://wa.me/6283140470146"
+     class="px-10 py-4 bg-green-500 rounded-xl text-lg shadow-lg hover:scale-105 transition">
+     Order via WhatsApp
+  </a>
+</section>
+
+<!-- SCRIPT PRODUK -->
+<script>
+const produk = [
+  { nama: "Digital X", gambar: "j1.png", harga: "Rp120K" },
+  { nama: "Classic Silver", gambar: "j2.png", harga: "Rp150K" },
+  { nama: "Sport Pro", gambar: "j3.jpg", harga: "Rp180K" }
+];
+
+const container = document.getElementById("produk-list");
+
+produk.forEach((item) => {
+  container.innerHTML += `
+    <div class="group bg-white/5 border border-white/10 rounded-2xl overflow-hidden backdrop-blur hover:scale-105 transition shadow-lg" data-aos="fade-up">
+      
+      <div class="overflow-hidden">
+        <img src="${item.gambar}" class="w-full h-64 object-cover group-hover:scale-110 transition duration-500">
       </div>
-      <div class="bg-gray-100 p-3 rounded-lg shadow text-center">
-        <img src="j2.png" class="w-full h-24 object-cover rounded mb-2">
-        <p class="font-semibold">Jam Digital</p>
-      </div>
-      <div class="bg-gray-100 p-3 rounded-lg shadow text-center">
-        <img src="j3.jpg" class="w-full h-24 object-cover rounded mb-2">
-        <p class="font-semibold">Jam Sport</p>
+
+      <div class="p-5">
+        <h3 class="text-xl font-semibold">${item.nama}</h3>
+        <p class="text-blue-400 mt-1">${item.harga}</p>
+
+        <a href="detail.html"
+           class="block mt-4 text-center py-2 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-lg hover:opacity-90">
+           Buy Now
+        </a>
       </div>
     </div>
-  </div>
-</div>
-
-<script>
-  const modal = document.getElementById("modal");
-  const openModal = document.getElementById("openModal");
-  const closeModal = document.getElementById("closeModal");
-
-  openModal.addEventListener("click", () => {
-    modal.classList.remove("hidden");
-    modal.classList.add("flex");
-  });
-
-  closeModal.addEventListener("click", () => {
-    modal.classList.add("hidden");
-    modal.classList.remove("flex");
-  });
-
-  // Biar kalau klik area luar modal juga nutup
-  modal.addEventListener("click", (e) => {
-    if (e.target === modal) {
-      modal.classList.add("hidden");
-      modal.classList.remove("flex");
-    }
-  });
+  `;
+});
 </script>
 
-
-  <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+<script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
 <script>
-  AOS.init({
-    duration: 1200,
-    once: false,
-  });
-
-  const toggle = document.getElementById("menu-toggle");
-  const menu = document.getElementById("nav-menu");
-
-  toggle.addEventListener("click", () => {
-    menu.classList.toggle("hidden");
-  });
-
-  // MULTI SLIDER FIX
-  document.querySelectorAll(".jam-card").forEach((card) => {
-    const slider = card.querySelector(".slider");
-    const slides = card.querySelectorAll("img");
-    const prevBtn = card.querySelector(".prev");
-    const nextBtn = card.querySelector(".next");
-    let index = 0;
-
-    function showSlide(i) {
-      index = (i + slides.length) % slides.length;
-      slider.style.transform = `translateX(-${index * 100}%)`;
-    }
-
-    nextBtn.addEventListener("click", () => showSlide(index + 1));
-    prevBtn.addEventListener("click", () => showSlide(index - 1));
-
-    // Auto Slide per card
-    setInterval(() => showSlide(index + 1), 4000);
-  });
+AOS.init({ duration: 1200 });
 </script>
+
 </body>
 </html>

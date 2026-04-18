@@ -28,38 +28,57 @@
     <div id="produk-list" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6"></div>
   </section>
   <script>
-    const produk = [
-      { nama: "Jam Sport", gambar: "j1.png", link: "#" },
-      { nama: "Jam Elegan", gambar: "j2.png", link: "#" },
-      { nama: "Jam Digital", gambar: "j3.jpg", link: "#" },
-      { nama: "Jam Casual", gambar: "j4.jpg", link: "#" },
-      { nama: "Jam Klasik", gambar: "j1.png", link: "#" },
-      { nama: "Jam Modern", gambar: "j1.png", link: "#" },
-      { nama: "Jam Pria", gambar: "j1.png", link: "#" },
-      { nama: "Jam Wanita", gambar: "j1.png", link: "#" },
-      { nama: "Jam Premium", gambar: "j1.png", link: "#" },
-      { nama: "Jam Anak", gambar: "j1.png", link: "#" },
-      { nama: "Jam Premium", gambar: "j1.png", link: "#" },
-      { nama: "Jam Anak", gambar: "j1.png", link: "#" },
-      { nama: "Jam Premium", gambar: "j1.png", link: "#" },
-      { nama: "Jam Anak", gambar: "j1.png", link: "#" },
-      { nama: "Jam Anak", gambar: "j1.png", link: "#" },
-    ];
+const produk = [
+  {
+    id: "jam1",
+    nama: "Jam Sport",
+    gambar: "j1.png",
+    harga: "Rp120K",
+    deskripsi: "Jam sporty tahan air cocok outdoor"
+  },
+  {
+    id: "jam2",
+    nama: "Jam Elegan",
+    gambar: "j2.png",
+    harga: "Rp150K",
+    deskripsi: "Jam elegan premium stylish"
+  },
+  {
+    id: "jam3",
+    nama: "Jam Digital",
+    gambar: "j3.jpg",
+    harga: "Rp180K",
+    deskripsi: "Jam digital modern multifungsi"
+  },
+  {
+    id: "jam4",
+    nama: "Jam Casual",
+    gambar: "j4.jpg",
+    harga: "Rp130K",
+    deskripsi: "Jam santai untuk sehari-hari"
+  }
+];
 
-    const container = document.getElementById("produk-list");
+const container = document.getElementById("produk-list");
 
-    produk.forEach((item, index) => {
-      container.innerHTML += `
-        <div class="bg-white rounded-2xl shadow-md overflow-hidden" data-aos="fade-right">
-          <img src="${item.gambar}" alt="${item.nama}" class="w-full h-48 object-cover" />
-          <div class="p-3">
-            <p class="text-center text-lg font-bold text-gray-800 mb-2">${item.nama}</p>
-            <a href="detail.html?id=jam${index + 1}" class="block w-full text-center py-2 bg-blue-600 text-white rounded hover:translate-y-1 transition">Beli</a>
-          </div>
-        </div>
-      `;
-    });
-  </script>
+produk.forEach((item) => {
+  container.innerHTML += `
+    <div class="bg-white rounded-2xl shadow-md overflow-hidden">
+      <img src="${item.gambar}" class="w-full h-48 object-cover" />
+
+      <div class="p-3 text-center">
+        <p class="font-bold text-gray-800">${item.nama}</p>
+        <p class="text-blue-500">${item.harga}</p>
+
+        <a href="detail.html?id=${item.id}&nama=${encodeURIComponent(item.nama)}&gambar=${item.gambar}&harga=${item.harga}&deskripsi=${encodeURIComponent(item.deskripsi)}"
+           class="block mt-2 bg-blue-600 text-white py-2 rounded">
+           Beli
+        </a>
+      </div>
+    </div>
+  `;
+});
+</script>
    <a href="https://wa.me/6283140470146?text=Halo%2C%20saya%20mau%20tanya%20tentang%20produk%20jam%20tangan"
    target="_blank"
    class="fixed bottom-4 right-4 bg-green-500 hover:bg-green-600 text-white p-3 rounded-full shadow-lg z-50">
