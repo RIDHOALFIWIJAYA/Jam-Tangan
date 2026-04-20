@@ -1,41 +1,48 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Detail Produk</title>
+  <title>Detail Produk | JamLo</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-800 text-gray-900 font-sans">
-  <div class="max-w-xl mx-auto mt-10 p-4 bg-white rounded-lg shadow">
-    <h1 id="nama-produk" class="text-3xl font-bold mb-4"></h1>
-    <img id="gambar-produk" class="w-full h-auto rounded mb-4" />
-    <p id="deskripsi-produk" class="text-xl mb-2 font-bold"></p>
-    <h3 id="harga-produk" class="text-xl font-semibold text-green-600"></h3>
-    <a id="wa-button" target="_blank" class="inline-block mt-4 bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Chat via WhatsApp</a>
+<body class="bg-[#050505] text-white min-h-screen flex items-center justify-center p-6">
+  
+  <div class="max-w-4xl w-full bg-white/5 border border-white/10 rounded-3xl overflow-hidden shadow-2xl flex flex-col md:flex-row">
+    <div class="md:w-1/2 p-4">
+      <img id="gambar-produk" class="w-full h-[400px] object-cover rounded-2xl shadow-lg" />
+    </div>
+    
+    <div class="md:w-1/2 p-8 flex flex-col justify-center">
+      <a href="produk.html" class="text-blue-500 text-sm mb-4 inline-block">&larr; Kembali ke Katalog</a>
+      <h1 id="nama-produk" class="text-4xl font-black mb-2"></h1>
+      <h3 id="harga-produk" class="text-2xl font-bold text-blue-400 mb-6"></h3>
+      
+      <div class="border-t border-white/10 pt-6">
+        <p class="text-gray-400 leading-relaxed mb-8" id="deskripsi-produk"></p>
+        
+        <a id="wa-button" target="_blank" class="flex items-center justify-center gap-3 w-full bg-green-500 text-black font-bold py-4 rounded-2xl hover:bg-green-400 transition transform hover:scale-[1.02]">
+          Pesan via WhatsApp
+        </a>
+      </div>
+    </div>
   </div>
 
- <script>
-const params = new URLSearchParams(window.location.search);
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const nama = params.get("nama");
 
-const nama = params.get("nama");
-const gambar = params.get("gambar");
-const harga = params.get("harga");
-const deskripsi = params.get("deskripsi");
+    if (!nama) {
+      document.body.innerHTML = "<div class='text-center'><h1 class='text-4xl font-bold mb-4'>Produk Gaib!</h1><a href='produk.html' class='text-blue-500'>Balik ke katalog yuk</a></div>";
+    } else {
+      document.getElementById("nama-produk").textContent = nama;
+      document.getElementById("gambar-produk").src = params.get("gambar");
+      document.getElementById("deskripsi-produk").textContent = params.get("deskripsi");
+      document.getElementById("harga-produk").textContent = params.get("harga");
 
-if (!nama) {
-  document.body.innerHTML = "<h1 class='text-center text-red-500 mt-20'>Produk tidak ditemukan</h1>";
-} else {
-  document.getElementById("nama-produk").textContent = nama;
-  document.getElementById("gambar-produk").src = gambar;
-  document.getElementById("deskripsi-produk").textContent = deskripsi;
-  document.getElementById("harga-produk").textContent = harga;
-
-  const waText = `Halo, saya tertarik dengan ${nama}`;
-  document.getElementById("wa-button").href =
-    "https://wa.me/6283140470146?text=" + encodeURIComponent(waText);
-}
-</script>
-
+      const waText = `Halo JamLo! Saya tertarik dengan produk ini:\n\n*Nama:* ${nama}\n*Harga:* ${params.get("harga")}\n\nApakah stoknya masih tersedia?`;
+      document.getElementById("wa-button").href = "https://wa.me/6283140470146?text=" + encodeURIComponent(waText);
+    }
+  </script>
 </body>
 </html>

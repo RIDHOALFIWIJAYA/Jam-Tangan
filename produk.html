@@ -1,103 +1,46 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catalog | JamLo</title>
     <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet" />
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
-  <style>
-    body {
-      font-family: 'Poppins', sans-serif;
-    }
-  </style>
-    <title>Produk</title>
 </head>
-<body class="bg-gray-800 text-white">
- <header class="fixed top-0 w-full z-50 bg-gray-800 shadow-md sm:shadow-none px-4 py-3 flex justify-between items-center">
-    <h1 class="text-lg sm:text-xl font-bold hover:rotate-3 transition-transform">JamKu</h1>
-    <nav>
-      <ul class="flex gap-4 text-sm sm:text-lg font-medium p-4">
-        <li><a href="index.html" class="hover:text-blue-400 transition">Home</a></li>
-      </ul>
-    </nav>
+<body class="bg-[#0a0a0a] text-white">
+  <header class="p-6 flex justify-between items-center">
+    <a href="index.html" class="text-xl font-bold">&larr; Back</a>
+    <input type="text" id="searchInput" placeholder="Cari jam idamanmu..." class="bg-white/10 border border-white/20 rounded-full px-6 py-2 w-64 focus:outline-none focus:border-blue-500">
   </header>
-    <h3 class="mt-28 font-bold text-3xl" data-aos="fade-right">Produk Dari Jam Tangan</h3>
 
-  <section class="px-4 py-10">
-    <div id="produk-list" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6"></div>
-  </section>
+  <main class="p-8">
+    <h1 class="text-4xl font-bold mb-10">Our Collection</h1>
+    <div id="produk-list" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"></div>
+  </main>
+
+  <script src="data.js"></script>
   <script>
-const produk = [
-  {
-    id: "jam1",
-    nama: "Jam Sport",
-    gambar: "j1.png",
-    harga: "Rp120K",
-    deskripsi: "Jam sporty tahan air cocok outdoor"
-  },
-  {
-    id: "jam2",
-    nama: "Jam Elegan",
-    gambar: "j2.png",
-    harga: "Rp150K",
-    deskripsi: "Jam elegan premium stylish"
-  },
-  {
-    id: "jam3",
-    nama: "Jam Digital",
-    gambar: "j3.jpg",
-    harga: "Rp180K",
-    deskripsi: "Jam digital modern multifungsi"
-  },
-  {
-    id: "jam4",
-    nama: "Jam Casual",
-    gambar: "j4.jpg",
-    harga: "Rp130K",
-    deskripsi: "Jam santai untuk sehari-hari"
-  }
-];
+    const listContainer = document.getElementById("produk-list");
+    const searchInput = document.getElementById("searchInput");
 
-const container = document.getElementById("produk-list");
+    function displayProduk(filter = "") {
+      listContainer.innerHTML = "";
+      const filtered = produkData.filter(p => p.nama.toLowerCase().includes(filter.toLowerCase()));
+      
+      filtered.forEach(p => {
+        listContainer.innerHTML += `
+          <div class="bg-white/5 border border-white/10 p-4 rounded-2xl hover:bg-white/10 transition">
+            <img src="${p.gambar}" class="w-full h-48 object-cover rounded-xl mb-4">
+            <span class="text-xs text-blue-500 uppercase font-bold">${p.kategori}</span>
+            <h3 class="text-lg font-bold">${p.nama}</h3>
+            <p class="text-gray-400 mb-4">${p.harga}</p>
+            <a href="${getDetailUrl(p)}" class="block text-center py-2 bg-blue-600 rounded-lg hover:bg-blue-700 transition">Beli Sekarang</a>
+          </div>
+        `;
+      });
+    }
 
-produk.forEach((item) => {
-  container.innerHTML += `
-    <div class="bg-white rounded-2xl shadow-md overflow-hidden">
-      <img src="${item.gambar}" class="w-full h-48 object-cover" />
-
-      <div class="p-3 text-center">
-        <p class="font-bold text-gray-800">${item.nama}</p>
-        <p class="text-blue-500">${item.harga}</p>
-
-        <a href="detail.html?id=${item.id}&nama=${encodeURIComponent(item.nama)}&gambar=${item.gambar}&harga=${item.harga}&deskripsi=${encodeURIComponent(item.deskripsi)}"
-           class="block mt-2 bg-blue-600 text-white py-2 rounded">
-           Beli
-        </a>
-      </div>
-    </div>
-  `;
-});
-</script>
-   <a href="https://wa.me/6283140470146?text=Halo%2C%20saya%20mau%20tanya%20tentang%20produk%20jam%20tangan"
-   target="_blank"
-   class="fixed bottom-4 right-4 bg-green-500 hover:bg-green-600 text-white p-3 rounded-full shadow-lg z-50">
-  <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-    <path d="M20.52 3.48A11.95 11.95 0 0012 0C5.37 0 .01 5.37 0 12a11.94 11.94 0 001.68 6.11L0 24l6.06-1.62A11.94 11.94 0 0012 24c6.63 0 12-5.37 12-12a11.95 11.95 0 00-3.48-8.52zM12 22c-1.91 0-3.77-.5-5.4-1.46l-.38-.22-3.6.96.96-3.6-.22-.38A9.97 9.97 0 012 12c0-5.52 4.48-10 10-10s10 4.48 10 10-4.48 10-10 10zm5.25-7.5l-1.48-.38a.96.96 0 00-.96.25l-.7.72a7.48 7.48 0 01-3.54-3.54l.72-.7a.96.96 0 00.25-.96l-.38-1.48a.96.96 0 00-.91-.68h-2a.96.96 0 00-.96.96c0 5.04 4.08 9.12 9.12 9.12.53 0 .96-.43.96-.96v-2a.96.96 0 00-.68-.91z"/>
-  </svg>
-</a>
-    <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
-  <script>
-    AOS.init({
-      duration: 1200,
-      once: false,
-    });
-  const toggle = document.getElementById("menu-toggle");
-  const menu = document.getElementById("nav-menu");
-
-  toggle.addEventListener("click", () => {
-    menu.classList.toggle("hidden");
-  });
-</script>
+    searchInput.addEventListener("input", (e) => displayProduk(e.target.value));
+    displayProduk(); // Load awal
+  </script>
 </body>
 </html>
