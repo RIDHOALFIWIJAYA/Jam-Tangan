@@ -30,6 +30,14 @@ const produkData = [
     harga: "Rp130.000", 
     kategori: "Casual", 
     deskripsi: "Tampilan minimalis dengan warna hitam doff yang memberikan kesan misterius namun tetap stylish." 
+  },
+  {
+    id: "jam5",
+    nama: "Analog test",
+    gambar: "./src/analog/analog1.jpg",
+    harga: "35.000",
+    kategori: "casual",
+    deskripsi: "Tampilan bagus dengan warna coklat glosy yang keren"
   }
 ];
 
