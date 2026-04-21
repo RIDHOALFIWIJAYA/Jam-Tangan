@@ -34,7 +34,7 @@ const produkData = [
   {
     id: "jam5",
     nama: "Analog test",
-    gambar: "./src/analog/analog1.jpg",
+    gambar: "../src/analog/analog1.jpg",
     harga: "35.000",
     kategori: "casual",
     deskripsi: "Tampilan bagus dengan warna coklat glosy yang keren"
