@@ -40,9 +40,15 @@
       document.getElementById("deskripsi-produk").textContent = params.get("deskripsi");
       document.getElementById("harga-produk").textContent = params.get("harga");
 
-      const waText = `Halo Jam35! Saya tertarik dengan produk ini:\n\n*Nama:* ${nama}\n*Harga:* ${params.get("harga")}\n\nApakah stoknya masih tersedia?`;
+      // Ambil URL halaman ini buat dikirim ke WA
+      const linkProduk = window.location.href;
+
+      // Update format teksnya biar ada linknya
+      const waText = `Halo Jam35! Saya tertarik dengan produk ini:\n\n*Nama:* ${nama}\n*Harga:* ${params.get("harga")}\n*Link Produk:* ${linkProduk}\n\nApakah stoknya masih tersedia?`;
+      
       document.getElementById("wa-button").href = "https://wa.me/6282164605637?text=" + encodeURIComponent(waText);
     }
   </script>
+
 </body>
 </html>
