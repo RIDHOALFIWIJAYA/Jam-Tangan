@@ -36,7 +36,7 @@ const produkData = [
     nama: "Swiss Army",
     gambar: "../src/analog/analog1.jpg",
     harga: "Rp35.000",
-    kategori: "casual",
+    kategori: "Casual",
     deskripsi: "Tampilan bagus dengan warna coklat glosy yang keren yang ngebuat jam inituh ada feelnya tersendiri"
   },
   {
@@ -44,7 +44,7 @@ const produkData = [
     nama: "Hush puppies",
     gambar: "../src/analog/analog2.jpg",
     harga: "Rp35.000",
-    kategori: "casual",
+    kategori: "Casual",
     deskripsi: "Tampilan bagus dengan warna hitam yang elegant dan minimalis cocok untuk kamu yang suka dengan gaya minimalis"
   },
     {
@@ -52,7 +52,7 @@ const produkData = [
     nama: "Swiss Army",
     gambar: "../src/analog/analog3.jpg",
     harga: "Rp35.000",
-    kategori: "casual",
+    kategori: "Casual",
     deskripsi: "Tampilan bagus dengan warna hitam yang elegant dan minimalis cocok untuk kamu yang suka dengan gaya minimalis"
   }
 ];
