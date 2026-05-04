@@ -35,25 +35,63 @@
     <div id="produk-list" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"></div>
   </main>
 
-  <script src="data.js"></script>
-  <script>
+    <script>
     const listContainer = document.getElementById("produk-list");
     const searchInput = document.getElementById("searchInput");
     const kategoriContainer = document.getElementById("kategori-container");
 
-    // State untuk nyimpen status filter saat ini
     let activeCategory = "All";
     let searchQuery = "";
+    
+    // Variabel buat nampung data dari Google Sheets
+    let produkData = []; 
+    let categories = ["All"];
 
-    // 1. Ambil daftar kategori unik dari data.js (Biar Dinamis)
-    const categories = ["All", ...new Set(produkData.map(p => p.kategori))];
+    // Fungsi pembantu buat bikin URL detail produk
+    function getDetailUrl(p) {
+      return `detail.html?id=${p.id}&nama=${encodeURIComponent(p.nama)}&gambar=${p.gambar}&harga=${p.harga}&deskripsi=${encodeURIComponent(p.deskripsi)}`;
+    }
 
-    // 2. Fungsi untuk ngerender tombol kategori
+    // 1. FUNGSI SAKTI: Mengambil data dari Google Sheets!
+    async function loadDataDariDatabase() {
+      // Nampilin loading animasi muter-muter
+      listContainer.innerHTML = `<div class="col-span-full flex justify-center py-10"><p class="text-blue-500 font-bold animate-pulse">⏳ Mengambil data dari Google Sheets...</p></div>`;
+      
+      try {
+        // === MASUKIN LINK API SHEETDB LU DI DALAM TANDA KUTIP DI BAWAH INI ===
+        const response = await fetch('https://sheetdb.io/api/v1/dsm9o1yvodvy3'); 
+        const dataMentah = await response.json();
+
+        // Kita rapihin datanya. Yang tadinya teks "Casual, Analog", kita pecah jadi Array ["Casual", "Analog"]
+        produkData = dataMentah.map(item => {
+          return {
+            id: item.id,
+            nama: item.nama,
+            gambar: item.gambar,
+            harga: item.harga,
+            kategori: item.kategori ? item.kategori.split(',').map(k => k.trim()) : ["Lainnya"],
+            deskripsi: item.deskripsi
+          };
+        });
+
+        // Ambil kategori unik buat tombol di atas
+        categories = ["All", ...new Set(produkData.flatMap(p => p.kategori))];
+
+        // Jalankan render UI
+        renderKategori();
+        displayProduk();
+
+      } catch (error) {
+        // Kalo gagal ngambil data (misal kuota API abis atau ga ada internet)
+        listContainer.innerHTML = `<p class="col-span-full text-center text-red-500 font-bold mt-10">❌ Gagal memuat database. Cek koneksi internet.</p>`;
+        console.error(error);
+      }
+    }
+
+    // 2. Fungsi render tombol kategori
     function renderKategori() {
       kategoriContainer.innerHTML = categories.map(kat => {
-        // Cek apakah tombol ini lagi aktif
         const isActive = kat === activeCategory;
-        // Kasih warna biru kalau aktif, warna transparan kalau nggak
         const bgClass = isActive 
           ? "bg-blue-600 text-white font-bold border-transparent" 
           : "bg-white/5 text-gray-400 border-white/10 hover:bg-white/10";
@@ -67,44 +105,50 @@
       }).join('');
     }
 
-    // 3. Fungsi yang dipanggil pas tombol kategori diklik
+    // 3. Fungsi klik kategori
     function setKategori(kat) {
       activeCategory = kat;
-      renderKategori(); // Render ulang tombol biar warnanya pindah
-      displayProduk();  // Render ulang list produknya
+      renderKategori(); 
+      displayProduk();  
     }
 
-    // 4. Fungsi utama ngerender produk
+    // 4. Fungsi render produk & tags
     function displayProduk() {
       listContainer.innerHTML = "";
       
-      // Filter datanya berdasarkan Search + Kategori
       const filtered = produkData.filter(p => {
         const matchSearch = p.nama.toLowerCase().includes(searchQuery.toLowerCase());
-        const matchCategory = activeCategory === "All" || p.kategori.toLowerCase() === activeCategory.toLowerCase();
-        
+        const matchCategory = activeCategory === "All" || p.kategori.includes(activeCategory);
         return matchSearch && matchCategory;
       });
       
-      // Kalau produknya nggak ada pas difilter
       if(filtered.length === 0) {
          listContainer.innerHTML = "<p class='text-gray-500 col-span-full text-center mt-10 italic'>Produk tidak ditemukan.</p>";
          return;
       }
 
-      // Looping produk yang lolos filter
       filtered.forEach(p => {
+        const tagHTML = p.kategori.map(kat => `
+          <div class="bg-black/60 backdrop-blur-md text-[9px] text-white px-2 py-1 rounded-full uppercase tracking-widest font-bold border border-white/10 shadow-sm">
+            ${kat}
+          </div>
+        `).join('');
+
         listContainer.innerHTML += `
-          <div class="bg-white/5 border border-white/10 p-4 rounded-3xl hover:bg-white/10 transition-all duration-300 group hover:-translate-y-2">
-            <div class="relative overflow-hidden rounded-2xl mb-5">
-               <img src="${p.gambar}" class="w-full h-64 object-cover transform transition duration-700 group-hover:scale-110">
-               <div class="absolute top-3 right-3 bg-black/60 backdrop-blur-md text-[10px] text-white px-3 py-1 rounded-full uppercase tracking-widest font-bold">
-                 ${p.kategori}
-               </div>
+          <div class="bg-white/5 border border-white/10 p-4 rounded-3xl hover:bg-white/10 transition-all duration-300 group hover:-translate-y-2 flex flex-col justify-between h-full">
+            <div>
+                <div class="relative overflow-hidden rounded-2xl mb-5">
+                   <img src="${p.gambar}" class="w-full h-64 object-cover transform transition duration-700 group-hover:scale-110">
+                   <div class="absolute top-3 left-3 right-3 flex flex-wrap gap-1.5 pointer-events-none">
+                     ${tagHTML}
+                   </div>
+                </div>
+                <div class="px-2">
+                  <h3 class="text-xl font-bold mb-1 tracking-tight">${p.nama}</h3>
+                  <p class="text-blue-400 mb-6 font-bold text-lg">${p.harga}</p>
+                </div>
             </div>
-            <div class="px-2">
-              <h3 class="text-xl font-bold mb-1 tracking-tight">${p.nama}</h3>
-              <p class="text-blue-400 mb-6 font-bold text-lg">${p.harga}</p>
+            <div class="px-2 pb-2 mt-auto">
               <a href="${getDetailUrl(p)}" class="block w-full text-center py-3 bg-blue-600 rounded-xl font-bold text-sm tracking-wider hover:bg-blue-500 transition-colors shadow-lg shadow-blue-600/20">BELI SEKARANG</a>
             </div>
           </div>
@@ -112,15 +156,15 @@
       });
     }
 
-    // 5. Event listener buat bar pencarian
+    // 5. Search bar event
     searchInput.addEventListener("input", (e) => {
       searchQuery = e.target.value;
       displayProduk();
     });
 
-    // Jalankan pas halaman pertama kali dibuka
-    renderKategori();
-    displayProduk();
+    // JALANKAN FUNGSI SAKTI PAS WEB DIBUKA
+    loadDataDariDatabase();
   </script>
+
 </body>
 </html>
