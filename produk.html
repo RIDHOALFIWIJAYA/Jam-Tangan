@@ -19,33 +19,43 @@
       }
     </style>
 </head>
-<body class="bg-[#0a0a0a] text-white min-h-screen">
+<body class="bg-[#0a0a0a] text-white min-h-screen flex flex-col">
   
   <header class="p-6 flex justify-between items-center sticky top-0 bg-[#0a0a0a]/80 backdrop-blur-lg z-50 border-b border-white/10">
     <a href="index.html" class="text-xl font-black hover:text-blue-500 transition-colors">&larr; Back</a>
     <input type="text" id="searchInput" placeholder="Cari jam idamanmu..." class="bg-white/10 border border-white/20 rounded-full px-5 py-2 w-48 sm:w-72 focus:outline-none focus:border-blue-500 transition-colors text-sm">
   </header>
 
-  <main class="p-8 max-w-7xl mx-auto">
+  <main class="p-8 max-w-7xl mx-auto flex-grow w-full">
     <h1 class="text-4xl font-black mb-8 italic tracking-tighter">Our Collection</h1>
     
     <div class="flex gap-3 overflow-x-auto pb-2 mb-8 scrollbar-hide" id="kategori-container">
-      </div>
+    </div>
 
     <div id="produk-list" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"></div>
+
+    <div class="flex justify-center mt-12 mb-8">
+      <button id="load-more-btn" onclick="renderItems()" class="hidden px-8 py-3 bg-white/5 hover:bg-blue-600 text-white font-bold rounded-full transition-all duration-300 border border-white/20 shadow-lg hover:-translate-y-1 tracking-wide">
+        Tampilkan Lebih Banyak ⬇️
+      </button>
+    </div>
   </main>
 
-    <script>
+  <script>
     const listContainer = document.getElementById("produk-list");
     const searchInput = document.getElementById("searchInput");
     const kategoriContainer = document.getElementById("kategori-container");
+    const loadMoreBtn = document.getElementById("load-more-btn"); // Ambil elemen tombol
 
     let activeCategory = "All";
     let searchQuery = "";
     
-    // Variabel buat nampung data dari Google Sheets
+    // Variabel Data & Pagination
     let produkData = []; 
     let categories = ["All"];
+    let filteredProducts = []; // Nampung data yang udah difilter
+    let currentIndex = 0; // Mulai dari jam ke-0
+    const itemsPerLoad = 8; // Menampilkan 8 jam per klik
 
     // Fungsi pembantu buat bikin URL detail produk
     function getDetailUrl(p) {
@@ -54,15 +64,13 @@
 
     // 1. FUNGSI SAKTI: Mengambil data dari Google Sheets!
     async function loadDataDariDatabase() {
-      // Nampilin loading animasi muter-muter
       listContainer.innerHTML = `<div class="col-span-full flex justify-center py-10"><p class="text-blue-500 font-bold animate-pulse">⏳ Mengambil data dari Google Sheets...</p></div>`;
       
       try {
-        // === MASUKIN LINK API SHEETDB LU DI DALAM TANDA KUTIP DI BAWAH INI ===
+        // Link API SheetDB lu tetep aman di sini
         const response = await fetch('https://sheetdb.io/api/v1/dsm9o1yvodvy3'); 
         const dataMentah = await response.json();
 
-        // Kita rapihin datanya. Yang tadinya teks "Casual, Analog", kita pecah jadi Array ["Casual", "Analog"]
         produkData = dataMentah.map(item => {
           return {
             id: item.id,
@@ -74,15 +82,12 @@
           };
         });
 
-        // Ambil kategori unik buat tombol di atas
         categories = ["All", ...new Set(produkData.flatMap(p => p.kategori))];
 
-        // Jalankan render UI
         renderKategori();
         displayProduk();
 
       } catch (error) {
-        // Kalo gagal ngambil data (misal kuota API abis atau ga ada internet)
         listContainer.innerHTML = `<p class="col-span-full text-center text-red-500 font-bold mt-10">❌ Gagal memuat database. Cek koneksi internet.</p>`;
         console.error(error);
       }
@@ -112,22 +117,33 @@
       displayProduk();  
     }
 
-    // 4. Fungsi render produk & tags
+    // 4. Fungsi Setup Filter (Reset UI pas ngetik atau ganti kategori)
     function displayProduk() {
-      listContainer.innerHTML = "";
+      listContainer.innerHTML = ""; // Kosongin list
+      currentIndex = 0; // Kembalikan index ke 0
       
-      const filtered = produkData.filter(p => {
+      filteredProducts = produkData.filter(p => {
         const matchSearch = p.nama.toLowerCase().includes(searchQuery.toLowerCase());
         const matchCategory = activeCategory === "All" || p.kategori.includes(activeCategory);
         return matchSearch && matchCategory;
       });
       
-      if(filtered.length === 0) {
+      if(filteredProducts.length === 0) {
          listContainer.innerHTML = "<p class='text-gray-500 col-span-full text-center mt-10 italic'>Produk tidak ditemukan.</p>";
+         loadMoreBtn.classList.add("hidden"); // Sembunyiin tombol kalau kosong
          return;
       }
 
-      filtered.forEach(p => {
+      // Lempar ke fungsi render items
+      renderItems();
+    }
+
+    // 5. Fungsi Render Item + Logic Load More
+    function renderItems() {
+      // Ambil potongan data (misal: 0 sampai 8, lalu 8 sampai 16)
+      const nextItems = filteredProducts.slice(currentIndex, currentIndex + itemsPerLoad);
+
+      nextItems.forEach(p => {
         const tagHTML = p.kategori.map(kat => `
           <div class="bg-black/60 backdrop-blur-md text-[9px] text-white px-2 py-1 rounded-full uppercase tracking-widest font-bold border border-white/10 shadow-sm">
             ${kat}
@@ -154,9 +170,19 @@
           </div>
         `;
       });
+
+      // Tambahin index untuk jatah load selanjutnya
+      currentIndex += itemsPerLoad;
+
+      // Cek apakah data udah habis ditampilin semua?
+      if (currentIndex >= filteredProducts.length) {
+        loadMoreBtn.classList.add("hidden"); // Habis, sembunyiin tombol
+      } else {
+        loadMoreBtn.classList.remove("hidden"); // Masih ada sisa, tampilin tombol
+      }
     }
 
-    // 5. Search bar event
+    // 6. Search bar event
     searchInput.addEventListener("input", (e) => {
       searchQuery = e.target.value;
       displayProduk();
