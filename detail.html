@@ -21,9 +21,18 @@
       <div class="border-t border-white/10 pt-6">
         <p class="text-gray-400 leading-relaxed mb-8" id="deskripsi-produk"></p>
         
-        <a id="wa-button" target="_blank" class="flex items-center justify-center gap-3 w-full bg-green-500 text-black font-bold py-4 rounded-2xl hover:bg-green-400 transition transform hover:scale-[1.02]">
+        <a id="wa-button" target="_blank" class="flex items-center justify-center gap-3 w-full bg-green-500 text-black font-bold py-4 rounded-2xl hover:bg-green-400 transition transform hover:scale-[1.02] mb-4">
           Pesan via WhatsApp
         </a>
+
+        <div class="grid grid-cols-2 gap-4">
+          <button onclick="shareToWA()" class="flex items-center justify-center gap-2 py-3 bg-white/5 border border-white/10 rounded-xl text-xs font-bold hover:bg-white/10 transition">
+            <span>📲</span> Share WA
+          </button>
+          <button onclick="copyToClipboard()" class="flex items-center justify-center gap-2 py-3 bg-white/5 border border-white/10 rounded-xl text-xs font-bold hover:bg-white/10 transition">
+            <span id="copy-icon">🔗</span> <span id="copy-text">Copy Link</span>
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -31,6 +40,24 @@
   <script>
     const params = new URLSearchParams(window.location.search);
     const nama = params.get("nama");
+
+    function shareToWA() {
+      const text = `Cek deh jam tangan keren ini: *${nama}* di JAM35! 🔥\n\nLink: ${window.location.href}`;
+      window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
+    }
+
+    function copyToClipboard() {
+      navigator.clipboard.writeText(window.location.href).then(() => {
+        const icon = document.getElementById("copy-icon");
+        const text = document.getElementById("copy-text");
+        icon.textContent = "✅";
+        text.textContent = "Copied!";
+        setTimeout(() => {
+          icon.textContent = "🔗";
+          text.textContent = "Copy Link";
+        }, 2000);
+      });
+    }
 
     if (!nama) {
       document.body.innerHTML = "<div class='text-center'><h1 class='text-4xl font-bold mb-4'>Produk Gaib!</h1><a href='produk.html' class='text-blue-500'>Balik ke katalog yuk</a></div>";

@@ -9,13 +9,17 @@
       @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
       body { font-family: 'Plus Jakarta Sans', sans-serif; }
       
-      /* Sembunyin scrollbar di mobile biar UI tetep clean */
-      .scrollbar-hide::-webkit-scrollbar {
-          display: none;
+      .scrollbar-hide::-webkit-scrollbar { display: none; }
+      .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+
+      .skeleton {
+        background: linear-gradient(90deg, rgba(255,255,255,0.03) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.03) 75%);
+        background-size: 200% 100%;
+        animation: shimmer 2s infinite linear;
       }
-      .scrollbar-hide {
-          -ms-overflow-style: none;
-          scrollbar-width: none;
+      @keyframes shimmer {
+        from { background-position: -200% 0; }
+        to { background-position: 200% 0; }
       }
     </style>
 </head>
@@ -64,7 +68,16 @@
 
     // 1. FUNGSI SAKTI: Mengambil data dari Google Sheets!
     async function loadDataDariDatabase() {
-      listContainer.innerHTML = `<div class="col-span-full flex justify-center py-10"><p class="text-blue-500 font-bold animate-pulse">⏳ Mengambil data dari Google Sheets...</p></div>`;
+      listContainer.innerHTML = Array(8).fill(0).map(() => `
+        <div class="bg-white/5 border border-white/10 p-4 rounded-3xl">
+          <div class="skeleton w-full h-64 rounded-2xl mb-5"></div>
+          <div class="space-y-3 px-2">
+            <div class="skeleton h-6 w-3/4 rounded-lg"></div>
+            <div class="skeleton h-5 w-1/2 rounded-lg"></div>
+          </div>
+          <div class="skeleton h-12 w-full rounded-xl mt-6"></div>
+        </div>
+      `).join('');
       
       try {
         // Link API SheetDB lu tetep aman di sini
