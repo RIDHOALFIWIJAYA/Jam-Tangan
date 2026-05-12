@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Catalog | JAM35</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/@dotlottie/player-component@latest/dist/dotlottie-player.mjs" type="module"></script>
     <style>
       @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
       body { font-family: 'Plus Jakarta Sans', sans-serif; }
@@ -21,12 +22,19 @@
         from { background-position: -200% 0; }
         to { background-position: 200% 0; }
       }
+      .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(15px); z-index: 1000; align-items: center; justify-content: center; padding: 20px; }
+      .modal.active { display: flex; }
     </style>
 </head>
 <body class="bg-[#0a0a0a] text-white min-h-screen flex flex-col">
   
   <header class="p-6 flex justify-between items-center sticky top-0 bg-[#0a0a0a]/80 backdrop-blur-lg z-50 border-b border-white/10">
-    <a href="index.html" class="text-xl font-black hover:text-blue-500 transition-colors">&larr; Back</a>
+    <div class="flex items-center gap-4">
+      <a href="index.html" class="text-xl font-black hover:text-blue-500 transition-colors">&larr;</a>
+      <button onclick="openWishlist()" class="relative glass p-2 rounded-full hover:bg-white/10 transition">
+        ❤️ <span id="wishlist-count" class="absolute -top-1 -right-1 bg-blue-600 text-[8px] w-4 h-4 rounded-full flex items-center justify-center font-bold">0</span>
+      </button>
+    </div>
     <input type="text" id="searchInput" placeholder="Cari jam idamanmu..." class="bg-white/10 border border-white/20 rounded-full px-5 py-2 w-48 sm:w-72 focus:outline-none focus:border-blue-500 transition-colors text-sm">
   </header>
 
@@ -38,12 +46,32 @@
 
     <div id="produk-list" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"></div>
 
+    <!-- Empty State (Lottie) -->
+    <div id="empty-state" class="hidden flex-col items-center justify-center py-20">
+      <dotlottie-player src="https://lottie.host/8e318d18-5085-485e-998b-70086d389a07/u6R7XQ7tAn.json" background="transparent" speed="1" style="width: 300px; height: 300px;" loop autoplay></dotlottie-player>
+      <p class="text-gray-500 italic mt-4 text-center">Waktu terhenti... Jam tidak ditemukan.</p>
+    </div>
+
     <div class="flex justify-center mt-12 mb-8">
       <button id="load-more-btn" onclick="renderItems()" class="hidden px-8 py-3 bg-white/5 hover:bg-blue-600 text-white font-bold rounded-full transition-all duration-300 border border-white/20 shadow-lg hover:-translate-y-1 tracking-wide">
         Tampilkan Lebih Banyak ⬇️
       </button>
     </div>
   </main>
+
+  <!-- Wishlist Modal -->
+  <div id="wishlistModal" class="modal">
+    <div class="glass p-8 rounded-[40px] max-w-2xl w-full border-blue-500/20 relative max-h-[80vh] flex flex-col">
+      <button onclick="closeWishlist()" class="absolute top-6 right-6 text-gray-400 hover:text-white">&times;</button>
+      <h2 class="text-3xl font-black mb-6 italic uppercase">Your Favorites ❤️</h2>
+      <div id="wishlist-items" class="overflow-y-auto space-y-4 pr-2 custom-scrollbar">
+        <!-- Wishlist items go here -->
+      </div>
+      <div id="wishlist-empty" class="text-center py-10 hidden">
+        <p class="text-gray-500 italic">Belum ada jam favoritmu...</p>
+      </div>
+    </div>
+  </div>
 
   <script>
     const listContainer = document.getElementById("produk-list");
@@ -60,6 +88,72 @@
     let filteredProducts = []; // Nampung data yang udah difilter
     let currentIndex = 0; // Mulai dari jam ke-0
     const itemsPerLoad = 8; // Menampilkan 8 jam per klik
+
+    // --- WISHLIST LOGIC ---
+    let wishlist = JSON.parse(localStorage.getItem('jam35_wishlist') || '[]');
+
+    function updateWishlistCount() {
+      document.getElementById("wishlist-count").textContent = wishlist.length;
+    }
+
+    function toggleWishlist(e, id) {
+      e.preventDefault();
+      e.stopPropagation();
+      const product = produkData.find(p => p.id === id);
+      const index = wishlist.findIndex(item => item.id === id);
+      
+      if (index > -1) {
+        wishlist.splice(index, 1);
+      } else {
+        wishlist.push(product);
+      }
+      
+      localStorage.setItem('jam35_wishlist', JSON.stringify(wishlist));
+      updateWishlistCount();
+      displayProduk(); // Re-render to update icons
+    }
+
+    function openWishlist() {
+      const modal = document.getElementById("wishlistModal");
+      const container = document.getElementById("wishlist-items");
+      const emptyMsg = document.getElementById("wishlist-empty");
+      
+      modal.classList.add("active");
+      container.innerHTML = "";
+      
+      if (wishlist.length === 0) {
+        emptyMsg.classList.remove("hidden");
+      } else {
+        emptyMsg.classList.add("hidden");
+        wishlist.forEach(p => {
+          container.innerHTML += `
+            <div class="flex items-center gap-4 bg-white/5 p-4 rounded-3xl border border-white/5 group hover:border-blue-500/30 transition-all">
+              <img src="${p.gambar}" class="w-20 h-20 object-cover rounded-2xl">
+              <div class="flex-grow">
+                <h4 class="font-bold text-lg">${p.nama}</h4>
+                <p class="text-blue-400 font-bold text-sm">${p.harga}</p>
+              </div>
+              <div class="flex gap-2">
+                <a href="${getDetailUrl(p)}" class="p-3 glass rounded-xl hover:bg-blue-600 transition">👁️</a>
+                <button onclick="removeFromWishlist('${p.id}')" class="p-3 glass rounded-xl hover:bg-red-600 transition">🗑️</button>
+              </div>
+            </div>
+          `;
+        });
+      }
+    }
+
+    function removeFromWishlist(id) {
+      wishlist = wishlist.filter(item => item.id !== id);
+      localStorage.setItem('jam35_wishlist', JSON.stringify(wishlist));
+      updateWishlistCount();
+      openWishlist(); // Refresh modal content
+      displayProduk(); // Refresh card icons
+    }
+
+    function closeWishlist() {
+      document.getElementById("wishlistModal").classList.remove("active");
+    }
 
     // Fungsi pembantu buat bikin URL detail produk
     function getDetailUrl(p) {
@@ -120,6 +214,7 @@
 
         categories = ["All", ...new Set(produkData.flatMap(p => p.kategori))];
 
+        updateWishlistCount();
         renderKategori();
         displayProduk();
 
@@ -164,22 +259,26 @@
         return matchSearch && matchCategory;
       });
       
+      const emptyState = document.getElementById("empty-state");
       if(filteredProducts.length === 0) {
-         listContainer.innerHTML = "<p class='text-gray-500 col-span-full text-center mt-10 italic'>Produk tidak ditemukan.</p>";
-         loadMoreBtn.classList.add("hidden"); // Sembunyiin tombol kalau kosong
+         emptyState.classList.remove("hidden");
+         emptyState.classList.add("flex");
+         loadMoreBtn.classList.add("hidden"); 
          return;
+      } else {
+         emptyState.classList.add("hidden");
+         emptyState.classList.remove("flex");
       }
 
-      // Lempar ke fungsi render items
       renderItems();
     }
 
     // 5. Fungsi Render Item + Logic Load More
     function renderItems() {
-      // Ambil potongan data (misal: 0 sampai 8, lalu 8 sampai 16)
       const nextItems = filteredProducts.slice(currentIndex, currentIndex + itemsPerLoad);
 
       nextItems.forEach(p => {
+        const isFav = wishlist.some(item => item.id === p.id);
         const tagHTML = p.kategori.map(kat => `
           <div class="bg-black/60 backdrop-blur-md text-[9px] text-white px-2 py-1 rounded-full uppercase tracking-widest font-bold border border-white/10 shadow-sm">
             ${kat}
@@ -187,7 +286,10 @@
         `).join('');
 
         listContainer.innerHTML += `
-          <div class="bg-white/5 border border-white/10 p-4 rounded-3xl hover:bg-white/10 transition-all duration-300 group hover:-translate-y-2 flex flex-col justify-between h-full">
+          <div class="bg-white/5 border border-white/10 p-4 rounded-3xl hover:bg-white/10 transition-all duration-300 group hover:-translate-y-2 flex flex-col justify-between h-full relative">
+            <button onclick="toggleWishlist(event, '${p.id}')" class="absolute top-6 right-6 z-10 w-10 h-10 glass rounded-full flex items-center justify-center text-sm hover:scale-110 transition-all">
+               ${isFav ? '❤️' : '🤍'}
+            </button>
             <div>
                 <div class="relative overflow-hidden rounded-2xl mb-5">
                    <img src="${p.gambar}" loading="lazy" class="w-full h-64 object-cover transform transition duration-700 group-hover:scale-110" alt="${p.nama}">
@@ -207,14 +309,12 @@
         `;
       });
 
-      // Tambahin index untuk jatah load selanjutnya
       currentIndex += itemsPerLoad;
 
-      // Cek apakah data udah habis ditampilin semua?
       if (currentIndex >= filteredProducts.length) {
-        loadMoreBtn.classList.add("hidden"); // Habis, sembunyiin tombol
+        loadMoreBtn.classList.add("hidden"); 
       } else {
-        loadMoreBtn.classList.remove("hidden"); // Masih ada sisa, tampilin tombol
+        loadMoreBtn.classList.remove("hidden"); 
       }
     }
 

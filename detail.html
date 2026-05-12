@@ -8,11 +8,25 @@
   <meta property="og:title" id="og-title" content="Detail Produk | JAM35">
   <meta property="og:description" id="og-desc" content="Temukan Jam impian kamu disini.">
   <meta property="og:image" id="og-image" content="">
+  <style>
+    .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); z-index: 1000; align-items: center; justify-content: center; padding: 20px; }
+    .modal.active { display: flex; }
+    input, textarea { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 15px; padding: 12px 16px; width: 100%; color: white; outline: none; transition: border 0.3s; }
+    input:focus, textarea:focus { border-color: #3b82f6; }
+  </style>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-[#050505] text-white min-h-screen flex flex-col items-center p-6 py-20">
   
-  <div class="max-w-4xl w-full bg-white/5 border border-white/10 rounded-3xl overflow-hidden shadow-2xl flex flex-col md:flex-row">
+  <!-- Wishlist Notification -->
+  <div id="wishlist-toast" class="fixed top-24 right-6 bg-blue-600 text-white px-6 py-3 rounded-2xl shadow-2xl translate-x-[150%] transition-transform duration-500 z-[300] font-bold text-sm"></div>
+
+  <div class="max-w-4xl w-full bg-white/5 border border-white/10 rounded-3xl overflow-hidden shadow-2xl flex flex-col md:flex-row relative">
+    <!-- Wishlist Button -->
+    <button onclick="toggleWishlist()" id="wishlist-btn" class="absolute top-6 right-6 z-10 w-12 h-12 glass rounded-full flex items-center justify-center text-xl hover:scale-110 transition-all">
+      <span id="wishlist-icon">🤍</span>
+    </button>
+
     <div class="md:w-1/2 p-4">
       <img id="gambar-produk" class="w-full h-[400px] object-cover rounded-2xl shadow-lg" loading="lazy" />
     </div>
@@ -25,9 +39,9 @@
       <div class="border-t border-white/10 pt-6">
         <p class="text-gray-400 leading-relaxed mb-8" id="deskripsi-produk"></p>
         
-        <a id="wa-button" target="_blank" class="flex items-center justify-center gap-3 w-full bg-green-500 text-black font-bold py-4 rounded-2xl hover:bg-green-400 transition transform hover:scale-[1.02] mb-4">
-          Pesan via WhatsApp
-        </a>
+        <button onclick="openOrderModal()" class="flex items-center justify-center gap-3 w-full bg-blue-600 text-white font-bold py-4 rounded-2xl hover:bg-blue-500 transition transform hover:scale-[1.02] mb-4 shadow-xl shadow-blue-600/20">
+          Pesan Sekarang (Formal)
+        </button>
 
         <div class="grid grid-cols-2 gap-4">
           <button onclick="shareToWA()" class="flex items-center justify-center gap-2 py-3 bg-white/5 border border-white/10 rounded-xl text-xs font-bold hover:bg-white/10 transition">
@@ -36,6 +50,60 @@
           <button onclick="copyToClipboard()" class="flex items-center justify-center gap-2 py-3 bg-white/5 border border-white/10 rounded-xl text-xs font-bold hover:bg-white/10 transition">
             <span id="copy-icon">🔗</span> <span id="copy-text">Copy Link</span>
           </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Order Modal -->
+  <div id="orderModal" class="modal">
+    <div class="glass p-1 md:p-1.5 rounded-[45px] max-w-lg w-full border-blue-500/30 relative shadow-[0_0_50px_rgba(59,130,246,0.15)]" data-aos="zoom-in">
+      <div class="bg-[#0a0a0a] rounded-[40px] p-8 md:p-12 relative overflow-hidden">
+        <!-- Decoration Blur -->
+        <div class="absolute -top-20 -right-20 w-64 h-64 bg-blue-600/10 blur-[100px] rounded-full"></div>
+        <div class="absolute -bottom-20 -left-20 w-64 h-64 bg-indigo-600/10 blur-[100px] rounded-full"></div>
+
+        <button onclick="closeOrderModal()" class="absolute top-8 right-8 text-gray-500 hover:text-white transition-colors w-10 h-10 flex items-center justify-center rounded-full glass border-white/5 z-20">&times;</button>
+        
+        <div class="relative z-10">
+          <div class="inline-block px-3 py-1 bg-blue-500/10 border border-blue-500/20 rounded-full text-[10px] text-blue-400 font-black uppercase tracking-widest mb-4">Secure Checkout</div>
+          <h2 class="text-3xl md:text-4xl font-black mb-2 italic uppercase tracking-tighter leading-tight">Complete<br>Your Order.</h2>
+          <p class="text-gray-500 text-xs mb-10 uppercase tracking-widest leading-relaxed">Silahkan isi data pengiriman Anda dengan benar untuk pembuatan invoice resmi.</p>
+          
+          <div class="space-y-6">
+            <div class="group">
+              <label class="text-[10px] uppercase tracking-[0.2em] text-gray-500 font-bold mb-3 block group-focus-within:text-blue-500 transition-colors">Nama Lengkap</label>
+              <div class="relative">
+                <input type="text" id="order-nama" placeholder="Masukkan nama Anda..." class="bg-white/[0.03] border-white/10 focus:border-blue-500/50 focus:bg-white/[0.06] transition-all pl-5 pr-5 py-4 rounded-2xl">
+              </div>
+            </div>
+            
+            <div class="group">
+              <label class="text-[10px] uppercase tracking-[0.2em] text-gray-500 font-bold mb-3 block group-focus-within:text-blue-500 transition-colors">Alamat Lengkap</label>
+              <div class="relative">
+                <textarea id="order-alamat" rows="3" placeholder="Jl. Kemewahan No. 35, Kota..." class="bg-white/[0.03] border-white/10 focus:border-blue-500/50 focus:bg-white/[0.06] transition-all pl-5 pr-5 py-4 rounded-2xl resize-none"></textarea>
+              </div>
+            </div>
+
+            <div class="p-6 rounded-3xl bg-gradient-to-br from-white/[0.04] to-transparent border border-white/5 space-y-3">
+              <div class="flex justify-between items-center">
+                <span class="text-[10px] uppercase font-bold text-gray-400 tracking-widest">Order Summary</span>
+                <span id="invoice-id" class="text-[10px] font-black text-blue-500 bg-blue-500/10 px-2 py-0.5 rounded">#INV-XXXX</span>
+              </div>
+              <div class="flex justify-between items-end">
+                <h4 id="order-item-name" class="text-xl font-bold tracking-tight truncate max-w-[150px]">---</h4>
+                <div id="order-item-price" class="text-lg font-black italic text-white">---</div>
+              </div>
+            </div>
+
+            <button onclick="sendOrder()" class="group relative w-full bg-white text-black font-black py-5 rounded-[20px] hover:bg-blue-600 hover:text-white transition-all duration-500 overflow-hidden shadow-2xl">
+              <span class="relative z-10 flex items-center justify-center gap-3">
+                KIRIM VIA WHATSAPP 
+                <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+              </span>
+            </button>
+            <p class="text-[9px] text-center text-gray-600 uppercase tracking-widest font-bold">Encrypted & Secure Transaction</p>
+          </div>
         </div>
       </div>
     </div>
@@ -66,6 +134,77 @@
     const harga = params.get("harga");
     const deskripsi = params.get("deskripsi");
 
+    // --- WISHLIST LOGIC ---
+    let wishlist = JSON.parse(localStorage.getItem('jam35_wishlist') || '[]');
+    
+    function updateWishlistUI() {
+      const isFav = wishlist.some(item => item.id === currentId);
+      document.getElementById("wishlist-icon").textContent = isFav ? "❤️" : "🤍";
+      document.getElementById("wishlist-btn").classList.toggle("bg-white/10", isFav);
+    }
+
+    function toggleWishlist() {
+      const index = wishlist.findIndex(item => item.id === currentId);
+      const toast = document.getElementById("wishlist-toast");
+      
+      if (index > -1) {
+        wishlist.splice(index, 1);
+        showToast("Dihapus dari Favorit 💔");
+      } else {
+        wishlist.push({ id: currentId, nama, gambar, harga, deskripsi });
+        showToast("Ditambahkan ke Favorit ❤️");
+      }
+      
+      localStorage.setItem('jam35_wishlist', JSON.stringify(wishlist));
+      updateWishlistUI();
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById("wishlist-toast");
+      toast.textContent = msg;
+      toast.style.transform = "translateX(0)";
+      setTimeout(() => {
+        toast.style.transform = "translateX(150%)";
+      }, 3000);
+    }
+
+    // --- ORDER MODAL LOGIC ---
+    function openOrderModal() {
+      document.getElementById("orderModal").classList.add("active");
+      document.getElementById("order-item-name").textContent = nama;
+      document.getElementById("order-item-price").textContent = harga;
+      const invId = "JAM-" + Math.random().toString(36).substr(2, 6).toUpperCase();
+      document.getElementById("invoice-id").textContent = "#" + invId;
+    }
+
+    function closeOrderModal() {
+      document.getElementById("orderModal").classList.remove("active");
+    }
+
+    function sendOrder() {
+      const customerName = document.getElementById("order-nama").value;
+      const customerAddress = document.getElementById("order-alamat").value;
+      const invoiceId = document.getElementById("invoice-id").textContent;
+
+      if (!customerName || !customerAddress) {
+        alert("Lengkapi data kamu dulu ya!");
+        return;
+      }
+
+      const waText = `*INVOICE ORDER JAM35*\n` +
+                    `--------------------------\n` +
+                    `*ID:* ${invoiceId}\n` +
+                    `*Produk:* ${nama}\n` +
+                    `*Harga:* ${harga}\n\n` +
+                    `*Data Pemesan:*\n` +
+                    `Nama: ${customerName}\n` +
+                    `Alamat: ${customerAddress}\n` +
+                    `--------------------------\n` +
+                    `_Link Produk: ${window.location.href}_`;
+
+      window.open(`https://wa.me/6282164605637?text=${encodeURIComponent(waText)}`, '_blank');
+    }
+
     // Dynamic Meta Tags & Title
     if (nama) {
       document.title = `${nama} | JAM35 Premium Watches`;
@@ -73,6 +212,16 @@
       document.getElementById("og-title").setAttribute("content", nama);
       document.getElementById("og-desc").setAttribute("content", deskripsi);
       document.getElementById("og-image").setAttribute("content", gambar);
+      
+      document.getElementById("nama-produk").textContent = nama;
+      document.getElementById("gambar-produk").src = gambar;
+      document.getElementById("deskripsi-produk").textContent = deskripsi;
+      document.getElementById("harga-produk").textContent = harga;
+      
+      updateWishlistUI();
+      loadRelatedProducts();
+    } else {
+      document.body.innerHTML = "<div class='text-center p-20'><h1 class='text-4xl font-black mb-4'>Produk Tidak Ditemukan!</h1><a href='produk.html' class='text-blue-500 font-bold'>Kembali ke Katalog</a></div>";
     }
 
     function getDetailUrl(p) {
@@ -108,7 +257,6 @@
       const container = document.getElementById("related-products");
       try {
         const data = await fetchWithCache('https://sheetdb.io/api/v1/dsm9o1yvodvy3');
-        
         const filtered = data.filter(p => p.id !== currentId).sort(() => 0.5 - Math.random());
         const related = filtered.slice(0, 3);
 
@@ -142,26 +290,6 @@
           text.textContent = "Copy Link";
         }, 2000);
       });
-    }
-
-    if (!nama) {
-      document.body.innerHTML = "<div class='text-center'><h1 class='text-4xl font-bold mb-4'>Produk Gaib!</h1><a href='produk.html' class='text-blue-500'>Balik ke katalog yuk</a></div>";
-    } else {
-      document.getElementById("nama-produk").textContent = nama;
-      document.getElementById("gambar-produk").src = params.get("gambar");
-      document.getElementById("deskripsi-produk").textContent = params.get("deskripsi");
-      document.getElementById("harga-produk").textContent = params.get("harga");
-
-      // Ambil URL halaman ini buat dikirim ke WA
-      const linkProduk = window.location.href;
-
-      // Update format teksnya biar ada linknya
-      const waText = `Halo Jam35! Saya tertarik dengan produk ini:\n\n*Nama:* ${nama}\n*Harga:* ${params.get("harga")}\n*Link Produk:* ${linkProduk}\n\nApakah stoknya masih tersedia?`;
-      
-      document.getElementById("wa-button").href = "https://wa.me/6282164605637?text=" + encodeURIComponent(waText);
-      
-      // Load related products
-      loadRelatedProducts();
     }
   </script>
 
