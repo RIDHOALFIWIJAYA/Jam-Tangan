@@ -9,19 +9,39 @@
   <meta property="og:description" id="og-desc" content="Temukan Jam impian kamu disini.">
   <meta property="og:image" id="og-image" content="">
   <style>
-    .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); z-index: 1000; align-items: center; justify-content: center; padding: 20px; }
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
+    body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.05); }
+    .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(15px); z-index: 1000; align-items: center; justify-content: center; padding: 20px; }
     .modal.active { display: flex; }
     input, textarea { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 15px; padding: 12px 16px; width: 100%; color: white; outline: none; transition: border 0.3s; }
     input:focus, textarea:focus { border-color: #3b82f6; }
+    .custom-scrollbar::-webkit-scrollbar { width: 5px; }
+    .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(59, 130, 246, 0.5); border-radius: 10px; }
   </style>
   <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet"/>
 </head>
 <body class="bg-[#050505] text-white min-h-screen flex flex-col items-center p-6 py-20">
   
+  <header class="fixed top-0 w-full glass z-[100] px-6 md:px-8 py-4 flex justify-between items-center transition-all duration-300">
+    <div class="flex items-center gap-4">
+      <a href="produk.html" class="text-xl font-black hover:text-blue-500 transition-colors">&larr;</a>
+      <h1 class="text-xl font-extrabold tracking-tighter italic">JAM35.</h1>
+    </div>
+    <div class="flex items-center gap-4">
+      <button onclick="location.href='produk.html#cart'" class="relative glass p-2.5 rounded-full hover:bg-white/10 transition">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
+        <span id="cart-count-global" class="absolute -top-1 -right-1 bg-blue-600 text-[9px] w-4 h-4 rounded-full flex items-center justify-center font-black">0</span>
+      </button>
+    </div>
+  </header>
+
   <!-- Wishlist Notification -->
   <div id="wishlist-toast" class="fixed top-24 right-6 bg-blue-600 text-white px-6 py-3 rounded-2xl shadow-2xl translate-x-[150%] transition-transform duration-500 z-[300] font-bold text-sm"></div>
 
-  <div class="max-w-4xl w-full bg-white/5 border border-white/10 rounded-3xl overflow-hidden shadow-2xl flex flex-col md:flex-row relative">
+  <div class="max-w-4xl w-full bg-white/5 border border-white/10 rounded-3xl overflow-hidden shadow-2xl flex flex-col md:flex-row relative mt-10" data-aos="fade-up">
     <!-- Wishlist Button -->
     <button onclick="toggleWishlist()" id="wishlist-btn" class="absolute top-6 right-6 z-10 w-12 h-12 glass rounded-full flex items-center justify-center text-xl hover:scale-110 transition-all">
       <span id="wishlist-icon">🤍</span>
@@ -32,19 +52,21 @@
     </div>
     
     <div class="md:w-1/2 p-8 flex flex-col justify-center">
-      <a href="produk.html" class="text-blue-500 text-sm mb-4 inline-block">&larr; Kembali ke Katalog</a>
-      <h1 id="nama-produk" class="text-4xl font-black mb-2"></h1>
-      <h3 id="harga-produk" class="text-2xl font-bold text-blue-400 mb-6"></h3>
+      <div class="mb-4">
+        <span id="kategori-label" class="inline-block px-3 py-1 bg-blue-500/10 border border-blue-500/20 rounded-full text-[10px] text-blue-400 font-black uppercase tracking-widest mb-2">Premium Series</span>
+        <h1 id="nama-produk" class="text-4xl font-black mb-2 italic tracking-tighter"></h1>
+      </div>
+      <h3 id="harga-produk" class="text-2xl font-bold text-blue-400 mb-6 italic"></h3>
       
       <div class="border-t border-white/10 pt-6">
-        <p class="text-gray-400 leading-relaxed mb-8" id="deskripsi-produk"></p>
+        <p class="text-gray-400 leading-relaxed mb-8 text-sm" id="deskripsi-produk"></p>
         
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
-          <button onclick="addToCart()" class="flex items-center justify-center gap-3 bg-white text-black font-black py-4 rounded-2xl hover:bg-blue-600 hover:text-white transition-all shadow-xl shadow-white/5">
+          <button onclick="addToCart()" class="flex items-center justify-center gap-3 bg-white text-black font-black py-4 rounded-2xl hover:bg-blue-600 hover:text-white transition-all shadow-xl shadow-white/5 text-sm uppercase tracking-wider">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
             TAMBAH KERANJANG
           </button>
-          <button onclick="openOrderModal()" class="flex items-center justify-center gap-3 bg-blue-600 text-white font-black py-4 rounded-2xl hover:bg-blue-700 transition-all shadow-xl shadow-blue-600/20">
+          <button onclick="openOrderModal()" class="flex items-center justify-center gap-3 bg-blue-600 text-white font-black py-4 rounded-2xl hover:bg-blue-700 transition-all shadow-xl shadow-blue-600/20 text-sm uppercase tracking-wider">
             PESAN SEKARANG
           </button>
         </div>
@@ -68,7 +90,7 @@
   </div>
 
   <!-- Recently Viewed Section -->
-  <div id="recently-viewed-container" class="max-w-4xl w-full mt-20 hidden">
+  <div id="recently-viewed-container" class="max-w-4xl w-full mt-20 hidden" data-aos="fade-up">
     <div class="flex justify-between items-end mb-8">
       <div>
         <div class="inline-block px-3 py-1 bg-white/5 border border-white/10 rounded-full text-[9px] text-gray-500 font-black uppercase tracking-widest mb-3">Your History</div>
@@ -81,7 +103,7 @@
 
   <!-- Order Modal -->
   <div id="orderModal" class="modal">
-    <div class="glass p-1 md:p-1.5 rounded-[45px] max-w-lg w-full border-blue-500/30 relative shadow-[0_0_50px_rgba(59,130,246,0.15)]" data-aos="zoom-in">
+    <div class="glass p-1 md:p-1.5 rounded-[45px] max-w-lg w-full border-blue-500/30 relative shadow-[0_0_50px_rgba(59,130,246,0.15)]">
       <div class="bg-[#0a0a0a] rounded-[40px] p-8 md:p-12 relative overflow-hidden">
         <!-- Decoration Blur -->
         <div class="absolute -top-20 -right-20 w-64 h-64 bg-blue-600/10 blur-[100px] rounded-full"></div>
@@ -134,7 +156,7 @@
   </div>
 
   <!-- Related Products Section -->
-  <div class="max-w-4xl w-full mt-16">
+  <div class="max-w-4xl w-full mt-16" data-aos="fade-up">
     <h2 class="text-2xl font-black mb-8 italic uppercase tracking-tight">Mungkin Kamu Suka</h2>
     <div id="related-products" class="grid grid-cols-1 sm:grid-cols-3 gap-6">
       <!-- Skeleton Loading for Related -->
@@ -150,7 +172,15 @@
     <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.438 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
   </a>
 
+  <footer class="p-10 text-center text-gray-600 text-[10px] tracking-[0.3em] uppercase mt-20 border-t border-white/5 w-full">
+    &copy; 2026 JAM35 PREMIUM WATCHES. ALL RIGHTS RESERVED.
+  </footer>
+
+  <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
   <script>
+    AOS.init({ duration: 1000, once: true });
+
+    const WA_NUMBER = "6282164605637";
     const params = new URLSearchParams(window.location.search);
     const nama = params.get("nama");
     const currentId = params.get("id");
@@ -158,19 +188,21 @@
     const harga = params.get("harga");
     const deskripsi = params.get("deskripsi");
 
+    // Update Global Cart Count
+    function updateGlobalCartCount() {
+      const cart = JSON.parse(localStorage.getItem('jam35_cart') || '[]');
+      const countElement = document.getElementById("cart-count-global");
+      if (countElement) countElement.textContent = cart.length;
+    }
+    updateGlobalCartCount();
+
     // --- RECENTLY VIEWED LOGIC ---
     function updateRecentlyViewed() {
       if (!currentId) return;
       let recently = JSON.parse(localStorage.getItem('jam35_recently') || '[]');
-      
-      // Hapus jika sudah ada (biar naik ke atas)
       recently = recently.filter(item => item.id !== currentId);
-      
-      // Tambah ke awal
       recently.unshift({ id: currentId, nama, gambar, harga, deskripsi });
-      
-      // Limit 4 saja
-      recently = recently.slice(0, 5); // Ambil 5 (1 yang lagi dilihat + 4 lainnya)
+      recently = recently.slice(0, 5);
       localStorage.setItem('jam35_recently', JSON.stringify(recently));
       renderRecentlyViewed(recently);
     }
@@ -178,8 +210,6 @@
     function renderRecentlyViewed(recently) {
       const list = document.getElementById("recently-viewed-list");
       const container = document.getElementById("recently-viewed-container");
-      
-      // Jangan tampilin jam yang lagi dilihat sekarang
       const filtered = recently.filter(item => item.id !== currentId).slice(0, 4);
       
       if (filtered.length > 0) {
@@ -187,8 +217,8 @@
         list.innerHTML = filtered.map(p => `
           <a href="${getDetailUrl(p)}" class="glass p-4 rounded-[25px] border-white/5 hover:border-blue-500/20 transition-all group">
             <img src="${p.gambar}" class="w-full h-32 object-cover rounded-xl mb-4 group-hover:scale-105 transition-transform">
-            <h4 class="text-xs font-bold truncate">${p.nama}</h4>
-            <p class="text-[10px] text-blue-400 font-black mt-1">${p.harga}</p>
+            <h4 class="text-[10px] font-bold truncate uppercase tracking-tighter">${p.nama}</h4>
+            <p class="text-[10px] text-blue-400 font-black mt-1 italic">${p.harga}</p>
           </a>
         `).join('');
       }
@@ -202,6 +232,7 @@
       if (!exists) {
         cart.push({ id: currentId, nama, gambar, harga, deskripsi });
         localStorage.setItem('jam35_cart', JSON.stringify(cart));
+        updateGlobalCartCount();
         showToast("Masuk Keranjang! 🛒");
       } else {
         showToast("Sudah ada di Keranjang! ✨");
@@ -210,7 +241,6 @@
 
     // --- IG STORY SHARE ---
     function shareToIG() {
-      const text = `Gila! Jam ${nama} ini keren banget di JAM35. Definisi gaya sultan! 🔥`;
       alert("PRO-TIP: Screenshot halaman ini, lalu share ke IG Story kamu & tag @JAM35_PREMIUM! 📸");
     }
 
@@ -225,8 +255,6 @@
 
     function toggleWishlist() {
       const index = wishlist.findIndex(item => item.id === currentId);
-      const toast = document.getElementById("wishlist-toast");
-      
       if (index > -1) {
         wishlist.splice(index, 1);
         showToast("Dihapus dari Favorit 💔");
@@ -234,7 +262,6 @@
         wishlist.push({ id: currentId, nama, gambar, harga, deskripsi });
         showToast("Ditambahkan ke Favorit ❤️");
       }
-      
       localStorage.setItem('jam35_wishlist', JSON.stringify(wishlist));
       updateWishlistUI();
     }
@@ -243,9 +270,7 @@
       const toast = document.getElementById("wishlist-toast");
       toast.textContent = msg;
       toast.style.transform = "translateX(0)";
-      setTimeout(() => {
-        toast.style.transform = "translateX(150%)";
-      }, 3000);
+      setTimeout(() => { toast.style.transform = "translateX(150%)"; }, 3000);
     }
 
     // --- ORDER MODAL LOGIC ---
@@ -282,10 +307,9 @@
                     `--------------------------\n` +
                     `_Link Produk: ${window.location.href}_`;
 
-      window.open(`https://wa.me/6282164605637?text=${encodeURIComponent(waText)}`, '_blank');
+      window.open(`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(waText)}`, '_blank');
     }
 
-    // Dynamic Meta Tags & Title
     if (nama) {
       document.title = `${nama} | JAM35 Premium Watches`;
       document.getElementById("meta-desc").setAttribute("content", deskripsi);
@@ -313,7 +337,6 @@
       const cacheKey = 'jam35_products_cache';
       const cacheTimeKey = 'jam35_products_cache_time';
       const cacheExpiry = 60 * 60 * 1000;
-
       const cachedData = localStorage.getItem(cacheKey);
       const cachedTime = localStorage.getItem(cacheTimeKey);
       const now = new Date().getTime();
@@ -346,8 +369,8 @@
             <div class="relative overflow-hidden rounded-2xl mb-4">
               <img src="${p.gambar}" loading="lazy" class="w-full h-48 object-cover group-hover:scale-110 transition duration-500" alt="${p.nama}">
             </div>
-            <h3 class="font-bold text-sm mb-1">${p.nama}</h3>
-            <p class="text-blue-400 text-xs font-bold">${p.harga}</p>
+            <h3 class="font-bold text-sm mb-1 uppercase tracking-tighter">${p.nama}</h3>
+            <p class="text-blue-400 text-xs font-bold italic">${p.harga}</p>
           </a>
         `).join('');
       } catch (e) {
@@ -373,6 +396,5 @@
       });
     }
   </script>
-
 </body>
 </html>

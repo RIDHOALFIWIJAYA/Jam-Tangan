@@ -3,16 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Catalog | JAM35</title>
+    <title>Catalog | JAM35 Premium Watches</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/@dotlottie/player-component@latest/dist/dotlottie-player.mjs" type="module"></script>
+    <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet"/>
     <style>
       @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
-      body { font-family: 'Plus Jakarta Sans', sans-serif; }
+      body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #050505; color: white; }
       
       .scrollbar-hide::-webkit-scrollbar { display: none; }
       .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
 
+      .glass { background: rgba(255, 255, 255, 0.02); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.05); }
+      .text-glow { text-shadow: 0 0 20px rgba(59, 130, 246, 0.5); }
+      
       .skeleton {
         background: linear-gradient(90deg, rgba(255,255,255,0.03) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.03) 75%);
         background-size: 200% 100%;
@@ -22,42 +26,61 @@
         from { background-position: -200% 0; }
         to { background-position: 200% 0; }
       }
-      .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(15px); z-index: 1000; align-items: center; justify-content: center; padding: 20px; }
+      .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(20px); z-index: 1000; align-items: center; justify-content: center; padding: 20px; }
       .modal.active { display: flex; }
+      
+      .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+      .custom-scrollbar::-webkit-scrollbar-track { background: rgba(255,255,255,0.01); }
+      .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(59, 130, 246, 0.3); border-radius: 10px; }
+      .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(59, 130, 246, 0.5); }
     </style>
 </head>
-<body class="bg-[#0a0a0a] text-white min-h-screen flex flex-col">
+<body class="overflow-x-hidden min-h-screen flex flex-col">
   
-  <header class="p-6 flex justify-between items-center sticky top-0 bg-[#0a0a0a]/80 backdrop-blur-lg z-50 border-b border-white/10">
-    <div class="flex items-center gap-4">
-      <a href="index.html" class="text-xl font-black hover:text-blue-500 transition-colors">&larr;</a>
+  <header class="fixed top-0 w-full glass z-[100] px-6 md:px-8 py-4 flex justify-between items-center transition-all duration-300">
+    <div class="flex items-center gap-4 md:gap-8">
+      <a href="index.html" class="text-xl md:text-2xl font-extrabold tracking-tighter text-glow italic">JAM35.</a>
+      <div class="hidden md:flex items-center bg-white/5 border border-white/10 rounded-full px-4 py-1.5 focus-within:border-blue-500/50 transition-all">
+        <svg class="w-4 h-4 text-gray-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+        <input type="text" id="searchInput" placeholder="Search collection..." class="bg-transparent border-none outline-none text-xs w-48 lg:w-64">
+      </div>
+    </div>
+    <div class="flex items-center gap-3">
       <button onclick="openWishlist()" class="relative glass p-2.5 rounded-full hover:bg-white/10 transition">
-        ❤️ <span id="wishlist-count" class="absolute -top-1 -right-1 bg-blue-600 text-[8px] w-4 h-4 rounded-full flex items-center justify-center font-bold">0</span>
+        <span class="text-sm">❤️</span>
+        <span id="wishlist-count" class="absolute -top-1 -right-1 bg-blue-600 text-[8px] w-4 h-4 rounded-full flex items-center justify-center font-bold">0</span>
       </button>
       <button onclick="openCart()" class="relative glass p-2.5 rounded-full hover:bg-white/10 transition">
-        🛒 <span id="cart-count" class="absolute -top-1 -right-1 bg-blue-600 text-[8px] w-4 h-4 rounded-full flex items-center justify-center font-bold">0</span>
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
+        <span id="cart-count-global" class="absolute -top-1 -right-1 bg-blue-600 text-[8px] w-4 h-4 rounded-full flex items-center justify-center font-bold">0</span>
       </button>
     </div>
-    <input type="text" id="searchInput" placeholder="Cari jam idamanmu..." class="bg-white/10 border border-white/20 rounded-full px-5 py-2 w-48 sm:w-72 focus:outline-none focus:border-blue-500 transition-colors text-sm">
   </header>
 
-  <main class="p-8 max-w-7xl mx-auto flex-grow w-full">
-    <h1 class="text-4xl font-black mb-8 italic tracking-tighter">Our Collection</h1>
+  <main class="pt-28 pb-20 px-6 md:px-12 max-w-7xl mx-auto w-full flex-grow">
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-12 gap-6">
+        <div data-aos="fade-right">
+            <h1 class="text-4xl md:text-6xl font-black italic tracking-tighter uppercase leading-tight">Elite<br><span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-600">Timepieces</span></h1>
+        </div>
+        <div class="md:hidden w-full" data-aos="fade-up">
+            <input type="text" id="searchInputMobile" placeholder="Search items..." class="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 outline-none focus:border-blue-500/50 transition-all text-sm">
+        </div>
+    </div>
     
-    <div class="flex gap-3 overflow-x-auto pb-2 mb-8 scrollbar-hide" id="kategori-container">
+    <div class="flex gap-3 overflow-x-auto pb-4 mb-10 scrollbar-hide" id="kategori-container" data-aos="fade-up">
     </div>
 
-    <div id="produk-list" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"></div>
+    <div id="produk-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8"></div>
 
     <!-- Empty State (Lottie) -->
     <div id="empty-state" class="hidden flex-col items-center justify-center py-20">
-      <dotlottie-player src="https://lottie.host/8e318d18-5085-485e-998b-70086d389a07/u6R7XQ7tAn.json" background="transparent" speed="1" style="width: 300px; height: 300px;" loop autoplay></dotlottie-player>
-      <p class="text-gray-500 italic mt-4 text-center">Waktu terhenti... Jam tidak ditemukan.</p>
+      <dotlottie-player src="https://lottie.host/8e318d18-5085-485e-998b-70086d389a07/u6R7XQ7tAn.json" background="transparent" speed="1" style="width: 250px; height: 250px;" loop autoplay></dotlottie-player>
+      <p class="text-gray-500 italic mt-4 text-center text-sm tracking-widest uppercase">Waktu terhenti... Jam tidak ditemukan.</p>
     </div>
 
-    <div class="flex justify-center mt-12 mb-8">
-      <button id="load-more-btn" onclick="renderItems()" class="hidden px-8 py-3 bg-white/5 hover:bg-blue-600 text-white font-bold rounded-full transition-all duration-300 border border-white/20 shadow-lg hover:-translate-y-1 tracking-wide">
-        Tampilkan Lebih Banyak ⬇️
+    <div class="flex justify-center mt-20 mb-10">
+      <button id="load-more-btn" onclick="renderItems()" class="hidden px-10 py-4 glass hover:bg-blue-600 hover:border-transparent text-white font-bold rounded-2xl transition-all duration-500 shadow-xl tracking-widest text-xs uppercase">
+        Load More Collection ⬇️
       </button>
     </div>
   </main>
@@ -76,15 +99,15 @@
       </div>
 
       <div id="cart-empty" class="text-center py-10 hidden">
-        <p class="text-gray-500 italic">Keranjang belanja kosong...</p>
+        <p class="text-gray-500 italic text-sm">Keranjang belanja kosong...</p>
       </div>
 
       <div id="cart-footer" class="mt-8 pt-8 border-t border-white/10">
         <div class="flex justify-between items-end mb-6">
-          <span class="text-gray-400 text-xs font-bold uppercase tracking-widest">Total Pesanan</span>
-          <span id="cart-total" class="text-2xl font-black text-blue-500 italic">Rp 0</span>
+          <span class="text-gray-400 text-xs font-bold uppercase tracking-widest">Total Items</span>
+          <span id="cart-total" class="text-2xl font-black text-blue-500 italic">0 Items</span>
         </div>
-        <button onclick="checkoutViaWA()" class="w-full bg-white text-black font-black py-5 rounded-[20px] hover:bg-blue-600 hover:text-white transition-all duration-500 shadow-2xl flex items-center justify-center gap-3">
+        <button onclick="checkoutViaWA()" class="w-full bg-white text-black font-black py-5 rounded-[20px] hover:bg-blue-600 hover:text-white transition-all duration-500 shadow-2xl flex items-center justify-center gap-3 text-sm tracking-widest uppercase">
           CHECKOUT VIA WHATSAPP
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
         </button>
@@ -92,16 +115,38 @@
     </div>
   </div>
 
+  <!-- Wishlist Modal -->
+  <div id="wishlistModal" class="modal">
+    <div class="glass p-8 rounded-[40px] max-w-2xl w-full border-blue-500/20 relative max-h-[85vh] flex flex-col shadow-[0_0_50px_rgba(59,130,246,0.1)]">
+      <button onclick="closeWishlist()" class="absolute top-8 right-8 text-gray-400 hover:text-white transition-colors w-10 h-10 flex items-center justify-center rounded-full glass border-white/5 z-20">&times;</button>
+      <div class="mb-8">
+        <h2 class="text-3xl font-black italic uppercase tracking-tighter">Wishlist ❤️</h2>
+        <p class="text-gray-500 text-[10px] uppercase tracking-widest mt-1">Simpan jam idaman kamu di sini</p>
+      </div>
+      <div id="wishlist-items" class="overflow-y-auto space-y-4 pr-2 flex-grow custom-scrollbar"></div>
+      <div id="wishlist-empty" class="text-center py-10 hidden">
+        <p class="text-gray-500 italic text-sm">Belum ada jam favorit...</p>
+      </div>
+    </div>
+  </div>
+
+  <footer class="p-10 border-t border-white/5 text-center text-gray-600 text-[10px] tracking-[0.3em] uppercase">
+    &copy; 2026 JAM35 PREMIUM WATCHES. CRAFTED FOR EXCELLENCE.
+  </footer>
+
+  <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
   <script>
+    AOS.init({ duration: 1000, once: true });
+
+    const WA_NUMBER = "6282164605637";
     const listContainer = document.getElementById("produk-list");
     const searchInput = document.getElementById("searchInput");
+    const searchInputMobile = document.getElementById("searchInputMobile");
     const kategoriContainer = document.getElementById("kategori-container");
     const loadMoreBtn = document.getElementById("load-more-btn"); 
 
     let activeCategory = "All";
     let searchQuery = "";
-    
-    // Variabel Data & Pagination
     let produkData = []; 
     let categories = ["All"];
     let filteredProducts = []; 
@@ -116,8 +161,7 @@
     }
 
     function toggleWishlist(e, id) {
-      e.preventDefault();
-      e.stopPropagation();
+      if (e) { e.preventDefault(); e.stopPropagation(); }
       const product = produkData.find(p => p.id === id);
       const index = wishlist.findIndex(item => item.id === id);
       
@@ -146,15 +190,15 @@
         emptyMsg.classList.add("hidden");
         wishlist.forEach(p => {
           container.innerHTML += `
-            <div class="flex items-center gap-4 bg-white/5 p-4 rounded-3xl border border-white/5 group hover:border-blue-500/30 transition-all">
+            <div class="flex items-center gap-4 bg-white/[0.03] p-4 rounded-3xl border border-white/5 group hover:border-blue-500/30 transition-all">
               <img src="${p.gambar}" class="w-20 h-20 object-cover rounded-2xl">
               <div class="flex-grow">
-                <h4 class="font-bold text-lg">${p.nama}</h4>
-                <p class="text-blue-400 font-bold text-sm">${p.harga}</p>
+                <h4 class="font-bold text-lg tracking-tight">${p.nama}</h4>
+                <p class="text-blue-400 font-bold text-sm italic">${p.harga}</p>
               </div>
               <div class="flex gap-2">
-                <a href="${getDetailUrl(p)}" class="p-3 glass rounded-xl hover:bg-blue-600 transition">👁️</a>
-                <button onclick="removeFromWishlist('${p.id}')" class="p-3 glass rounded-xl hover:bg-red-600 transition">🗑️</button>
+                <a href="${getDetailUrl(p)}" class="w-10 h-10 glass rounded-xl flex items-center justify-center hover:bg-blue-600 transition">👁️</a>
+                <button onclick="removeFromWishlist('${p.id}')" class="w-10 h-10 glass rounded-xl flex items-center justify-center hover:bg-red-600 transition">🗑️</button>
               </div>
             </div>
           `;
@@ -178,12 +222,12 @@
     let cart = JSON.parse(localStorage.getItem('jam35_cart') || '[]');
 
     function updateCartCount() {
-      document.getElementById("cart-count").textContent = cart.length;
+      const countElement = document.getElementById("cart-count-global");
+      if (countElement) countElement.textContent = cart.length;
     }
 
     function addToCart(e, id) {
-      e.preventDefault();
-      e.stopPropagation();
+      if (e) { e.preventDefault(); e.stopPropagation(); }
       const product = produkData.find(p => p.id === id);
       const exists = cart.some(item => item.id === id);
       
@@ -224,8 +268,6 @@
             </div>
           `;
         });
-        
-        // Sederhana: Hitung jumlah item aja, karena format harga string (misal: Rp 1.500.000)
         document.getElementById("cart-total").textContent = cart.length + " Items";
       }
     }
@@ -243,31 +285,25 @@
 
     function checkoutViaWA() {
       if (cart.length === 0) return;
-      
       let itemText = cart.map((p, index) => `${index + 1}. *${p.nama}* (${p.harga})`).join('\n');
       const invId = "INV-B" + Math.random().toString(36).substr(2, 5).toUpperCase();
-      
       const waText = `*BULK ORDER - JAM35*\n` +
                     `--------------------------\n` +
                     `*ID:* #${invId}\n` +
                     `*Daftar Pesanan:*\n${itemText}\n` +
                     `--------------------------\n` +
                     `_Mohon diproses pesanannya ya Min!_`;
-      
-      window.open(`https://wa.me/6282164605637?text=${encodeURIComponent(waText)}`, '_blank');
+      window.open(`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(waText)}`, '_blank');
     }
 
-    // Fungsi pembantu buat bikin URL detail produk
     function getDetailUrl(p) {
       return `detail.html?id=${p.id}&nama=${encodeURIComponent(p.nama)}&gambar=${p.gambar}&harga=${p.harga}&deskripsi=${encodeURIComponent(p.deskripsi)}`;
     }
 
-    // 1. FUNGSI SAKTI: Mengambil data dari Google Sheets dengan Cache!
     async function fetchWithCache(url) {
       const cacheKey = 'jam35_products_cache';
       const cacheTimeKey = 'jam35_products_cache_time';
-      const cacheExpiry = 60 * 60 * 1000; // 1 jam
-
+      const cacheExpiry = 60 * 60 * 1000;
       const cachedData = localStorage.getItem(cacheKey);
       const cachedTime = localStorage.getItem(cacheTimeKey);
       const now = new Date().getTime();
@@ -290,7 +326,7 @@
 
     async function loadDataDariDatabase() {
       listContainer.innerHTML = Array(8).fill(0).map(() => `
-        <div class="bg-white/5 border border-white/10 p-4 rounded-3xl">
+        <div class="glass p-4 rounded-3xl">
           <div class="skeleton w-full h-64 rounded-2xl mb-5"></div>
           <div class="space-y-3 px-2">
             <div class="skeleton h-6 w-3/4 rounded-lg"></div>
@@ -302,59 +338,50 @@
       
       try {
         const dataMentah = await fetchWithCache('https://sheetdb.io/api/v1/dsm9o1yvodvy3'); 
-
-        produkData = dataMentah.map(item => {
-          return {
-            id: item.id,
-            nama: item.nama,
-            gambar: item.gambar,
-            harga: item.harga,
-            kategori: item.kategori ? item.kategori.split(',').map(k => k.trim()) : ["Lainnya"],
-            deskripsi: item.deskripsi
-          };
-        });
+        produkData = dataMentah.map(item => ({
+          id: item.id,
+          nama: item.nama,
+          gambar: item.gambar,
+          harga: item.harga,
+          kategori: item.kategori ? item.kategori.split(',').map(k => k.trim()) : ["Lainnya"],
+          deskripsi: item.deskripsi
+        }));
 
         categories = ["All", ...new Set(produkData.flatMap(p => p.kategori))];
-
         updateWishlistCount();
         updateCartCount();
         renderKategori();
         displayProduk();
-
       } catch (error) {
         listContainer.innerHTML = `<p class="col-span-full text-center text-red-500 font-bold mt-10">❌ Gagal memuat database. Cek koneksi internet.</p>`;
         console.error(error);
       }
     }
 
-    // 2. Fungsi render tombol kategori
     function renderKategori() {
       kategoriContainer.innerHTML = categories.map(kat => {
         const isActive = kat === activeCategory;
         const bgClass = isActive 
-          ? "bg-blue-600 text-white font-bold border-transparent" 
-          : "bg-white/5 text-gray-400 border-white/10 hover:bg-white/10";
-          
+          ? "bg-blue-600 text-white font-bold border-transparent shadow-lg shadow-blue-600/20" 
+          : "glass text-gray-400 border-white/10 hover:bg-white/5";
         return `
           <button onclick="setKategori('${kat}')" 
-                  class="px-6 py-2 rounded-full border whitespace-nowrap transition-all duration-300 text-sm tracking-wide ${bgClass}">
+                  class="px-8 py-2.5 rounded-full border whitespace-nowrap transition-all duration-500 text-xs tracking-widest uppercase ${bgClass}">
             ${kat}
           </button>
         `;
       }).join('');
     }
 
-    // 3. Fungsi klik kategori
     function setKategori(kat) {
       activeCategory = kat;
       renderKategori(); 
       displayProduk();  
     }
 
-    // 4. Fungsi Setup Filter (Reset UI pas ngetik atau ganti kategori)
     function displayProduk() {
-      listContainer.innerHTML = ""; // Kosongin list
-      currentIndex = 0; // Kembalikan index ke 0
+      listContainer.innerHTML = ""; 
+      currentIndex = 0; 
       
       filteredProducts = produkData.filter(p => {
         const matchSearch = p.nama.toLowerCase().includes(searchQuery.toLowerCase());
@@ -372,25 +399,22 @@
          emptyState.classList.add("hidden");
          emptyState.classList.remove("flex");
       }
-
       renderItems();
     }
 
-    // 5. Fungsi Render Item + Logic Load More
     function renderItems() {
       const nextItems = filteredProducts.slice(currentIndex, currentIndex + itemsPerLoad);
-
-      nextItems.forEach(p => {
+      nextItems.forEach((p, idx) => {
         const isFav = wishlist.some(item => item.id === p.id);
         const tagHTML = p.kategori.map(kat => `
-          <div class="bg-black/60 backdrop-blur-md text-[9px] text-white px-2 py-1 rounded-full uppercase tracking-widest font-bold border border-white/10 shadow-sm">
+          <div class="bg-black/60 backdrop-blur-md text-[8px] text-white px-2 py-0.5 rounded-full uppercase tracking-[0.2em] font-black border border-white/10">
             ${kat}
           </div>
         `).join('');
 
         listContainer.innerHTML += `
-          <div class="bg-white/5 border border-white/10 p-4 rounded-3xl hover:bg-white/10 transition-all duration-300 group hover:-translate-y-2 flex flex-col justify-between h-full relative">
-            <div class="absolute top-6 right-6 z-10 flex flex-col gap-2">
+          <div class="glass p-4 rounded-[35px] hover:bg-blue-600/5 transition-all duration-700 group hover:-translate-y-3 flex flex-col h-full relative" data-aos="fade-up" data-aos-delay="${idx * 50}">
+            <div class="absolute top-6 right-6 z-10 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-all duration-500">
               <button onclick="toggleWishlist(event, '${p.id}')" class="w-10 h-10 glass rounded-full flex items-center justify-center text-sm hover:scale-110 transition-all">
                  ${isFav ? '❤️' : '🤍'}
               </button>
@@ -399,26 +423,25 @@
               </button>
             </div>
             <div>
-                <div class="relative overflow-hidden rounded-2xl mb-5">
-                   <img src="${p.gambar}" loading="lazy" class="w-full h-64 object-cover transform transition duration-700 group-hover:scale-110" alt="${p.nama}">
-                   <div class="absolute top-3 left-3 right-3 flex flex-wrap gap-1.5 pointer-events-none">
+                <div class="relative overflow-hidden rounded-[25px] mb-6">
+                   <img src="${p.gambar}" loading="lazy" class="w-full h-72 object-cover transform transition duration-1000 group-hover:scale-110" alt="${p.nama}">
+                   <div class="absolute top-4 left-4 right-4 flex flex-wrap gap-1.5 pointer-events-none">
                      ${tagHTML}
                    </div>
                 </div>
                 <div class="px-2">
-                  <h3 class="text-xl font-bold mb-1 tracking-tight">${p.nama}</h3>
-                  <p class="text-blue-400 mb-6 font-bold text-lg">${p.harga}</p>
+                  <h3 class="text-xl font-bold mb-1 tracking-tight uppercase">${p.nama}</h3>
+                  <p class="text-blue-400 mb-6 font-black text-lg italic">${p.harga}</p>
                 </div>
             </div>
             <div class="px-2 pb-2 mt-auto">
-              <a href="${getDetailUrl(p)}" class="block w-full text-center py-3 bg-blue-600 rounded-xl font-bold text-sm tracking-wider hover:bg-blue-500 transition-colors shadow-lg shadow-blue-600/20">BELI SEKARANG</a>
+              <a href="${getDetailUrl(p)}" class="block w-full text-center py-4 bg-white text-black rounded-2xl font-black text-[10px] tracking-[0.2em] hover:bg-blue-600 hover:text-white transition-all duration-500 shadow-xl uppercase">Discover More</a>
             </div>
           </div>
         `;
       });
 
       currentIndex += itemsPerLoad;
-
       if (currentIndex >= filteredProducts.length) {
         loadMoreBtn.classList.add("hidden"); 
       } else {
@@ -426,15 +449,16 @@
       }
     }
 
-    // 6. Search bar event
-    searchInput.addEventListener("input", (e) => {
-      searchQuery = e.target.value;
-      displayProduk();
+    [searchInput, searchInputMobile].forEach(input => {
+        if(input) {
+            input.addEventListener("input", (e) => {
+                searchQuery = e.target.value;
+                displayProduk();
+            });
+        }
     });
 
-    // JALANKAN FUNGSI SAKTI PAS WEB DIBUKA
     loadDataDariDatabase();
   </script>
-
 </body>
 </html>
