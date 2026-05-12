@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>404 - Waktu Terhenti | JAM35</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet"/>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700;800&display=swap');
+    body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    .glass { background: rgba(255, 255, 255, 0.02); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.05); }
+    .bg-mesh {
+      background-image: radial-gradient(at 0% 0%, hsla(253,16%,7%,1) 0, transparent 50%), 
+                        radial-gradient(at 50% 0%, hsla(225,39%,30%,1) 0, transparent 50%), 
+                        radial-gradient(at 100% 0%, hsla(339,49%,30%,1) 0, transparent 50%);
+    }
+    .glitch {
+      animation: glitch 1s linear infinite;
+    }
+    @keyframes glitch {
+      2%, 64% { transform: translate(2px, 0) skew(0deg); }
+      4%, 60% { transform: translate(-2px, 0) skew(0deg); }
+      62% { transform: translate(0, 0) skew(5deg); }
+    }
+  </style>
+</head>
+<body class="bg-[#050505] text-white overflow-hidden bg-mesh min-h-screen flex items-center justify-center">
+
+  <div class="relative z-10 text-center px-6 max-w-2xl" data-aos="zoom-in">
+    <h1 class="text-[150px] md:text-[200px] font-black leading-none tracking-tighter italic opacity-10 absolute -top-20 md:-top-32 left-1/2 -translate-x-1/2 select-none">404</h1>
+    
+    <div class="glass p-10 md:p-16 rounded-[40px] border-blue-500/20 relative overflow-hidden">
+      <div class="absolute -top-10 -right-10 w-40 h-40 bg-blue-600/20 blur-[80px] rounded-full"></div>
+      
+      <div class="mb-8">
+        <span class="text-6xl md:text-8xl mb-6 block">⌛</span>
+        <h2 class="text-3xl md:text-5xl font-black uppercase tracking-tighter mb-4 glitch">Waktu Terhenti.</h2>
+        <p class="text-gray-400 text-sm md:text-base leading-relaxed">Sepertinya Anda tersesat di dimensi lain. Halaman yang Anda cari tidak ada di garis waktu ini.</p>
+      </div>
+
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a href="index.html" class="px-8 py-4 bg-white text-black font-bold rounded-2xl hover:bg-blue-500 hover:text-white transition-all duration-300 transform hover:scale-105">Kembali ke Beranda</a>
+        <a href="produk.html" class="px-8 py-4 glass border-white/10 rounded-2xl font-bold hover:bg-white/5 transition-all">Lihat Koleksi</a>
+      </div>
+    </div>
+    
+    <p class="mt-10 text-gray-600 text-xs tracking-[0.3em] uppercase">JAM35 PREMIUM WATCHES &bull; ERROR_TIME_NOT_FOUND</p>
+  </div>
+
+  <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+  <script>
+    AOS.init({ duration: 1000, once: true });
+  </script>
+</body>
+</html>

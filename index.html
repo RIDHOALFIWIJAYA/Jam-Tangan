@@ -222,6 +222,35 @@
     return `detail.html?id=${p.id}&nama=${encodeURIComponent(p.nama)}&gambar=${p.gambar}&harga=${p.harga}&deskripsi=${encodeURIComponent(p.deskripsi)}`;
   }
 
+  async function fetchWithCache(url) {
+    const cacheKey = 'jam35_products_cache';
+    const cacheTimeKey = 'jam35_products_cache_time';
+    const cacheExpiry = 60 * 60 * 1000; // 1 jam dalam milidetik
+
+    const cachedData = localStorage.getItem(cacheKey);
+    const cachedTime = localStorage.getItem(cacheTimeKey);
+    const now = new Date().getTime();
+
+    if (cachedData && cachedTime && (now - cachedTime < cacheExpiry)) {
+      console.log('Using cached data');
+      return JSON.parse(cachedData);
+    }
+
+    try {
+      const response = await fetch(url);
+      const data = await response.json();
+      localStorage.setItem(cacheKey, JSON.stringify(data));
+      localStorage.setItem(cacheTimeKey, now.toString());
+      return data;
+    } catch (error) {
+      if (cachedData) {
+        console.warn('Fetch failed, using stale cache');
+        return JSON.parse(cachedData);
+      }
+      throw error;
+    }
+  }
+
   async function loadFeaturedProducts() {
     const container = document.getElementById("produk-featured");
     
@@ -241,8 +270,7 @@
     `).join('');
 
     try {
-      const response = await fetch('https://sheetdb.io/api/v1/dsm9o1yvodvy3');
-      const data = await response.json();
+      const data = await fetchWithCache('https://sheetdb.io/api/v1/dsm9o1yvodvy3');
       
       container.innerHTML = ""; // Bersihkan loading
       
@@ -250,7 +278,7 @@
         container.innerHTML += `
           <div class="group relative glass p-6 rounded-[35px] transition-all duration-700 hover:bg-blue-600/5 hover:-translate-y-4 hover:border-blue-500/40" data-aos="fade-up">
             <div class="relative overflow-hidden rounded-[25px] mb-6">
-              <img src="${p.gambar}" class="w-full h-[400px] object-cover transition duration-1000 group-hover:scale-110">
+              <img src="${p.gambar}" loading="lazy" class="w-full h-[400px] object-cover transition duration-1000 group-hover:scale-110" alt="${p.nama}">
               <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition duration-500 flex items-end p-8">
                 <p class="text-xs text-gray-300 uppercase tracking-[0.2em] line-clamp-2">${p.deskripsi}</p>
               </div>
@@ -267,7 +295,7 @@
         `;
       });
     } catch (error) {
-      container.innerHTML = `<p class="col-span-full text-center text-red-500">Failed to load products.</p>`;
+      container.innerHTML = `<p class="col-span-full text-center text-red-500">Failed to load products. Check your connection.</p>`;
       console.error(error);
     }
   }
