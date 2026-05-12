@@ -31,8 +31,11 @@
   <header class="p-6 flex justify-between items-center sticky top-0 bg-[#0a0a0a]/80 backdrop-blur-lg z-50 border-b border-white/10">
     <div class="flex items-center gap-4">
       <a href="index.html" class="text-xl font-black hover:text-blue-500 transition-colors">&larr;</a>
-      <button onclick="openWishlist()" class="relative glass p-2 rounded-full hover:bg-white/10 transition">
+      <button onclick="openWishlist()" class="relative glass p-2.5 rounded-full hover:bg-white/10 transition">
         ❤️ <span id="wishlist-count" class="absolute -top-1 -right-1 bg-blue-600 text-[8px] w-4 h-4 rounded-full flex items-center justify-center font-bold">0</span>
+      </button>
+      <button onclick="openCart()" class="relative glass p-2.5 rounded-full hover:bg-white/10 transition">
+        🛒 <span id="cart-count" class="absolute -top-1 -right-1 bg-blue-600 text-[8px] w-4 h-4 rounded-full flex items-center justify-center font-bold">0</span>
       </button>
     </div>
     <input type="text" id="searchInput" placeholder="Cari jam idamanmu..." class="bg-white/10 border border-white/20 rounded-full px-5 py-2 w-48 sm:w-72 focus:outline-none focus:border-blue-500 transition-colors text-sm">
@@ -59,16 +62,32 @@
     </div>
   </main>
 
-  <!-- Wishlist Modal -->
-  <div id="wishlistModal" class="modal">
-    <div class="glass p-8 rounded-[40px] max-w-2xl w-full border-blue-500/20 relative max-h-[80vh] flex flex-col">
-      <button onclick="closeWishlist()" class="absolute top-6 right-6 text-gray-400 hover:text-white">&times;</button>
-      <h2 class="text-3xl font-black mb-6 italic uppercase">Your Favorites ❤️</h2>
-      <div id="wishlist-items" class="overflow-y-auto space-y-4 pr-2 custom-scrollbar">
-        <!-- Wishlist items go here -->
+  <!-- Cart Modal -->
+  <div id="cartModal" class="modal">
+    <div class="glass p-8 rounded-[40px] max-w-2xl w-full border-blue-500/20 relative max-h-[85vh] flex flex-col shadow-[0_0_50px_rgba(59,130,246,0.1)]">
+      <button onclick="closeCart()" class="absolute top-8 right-8 text-gray-400 hover:text-white transition-colors w-10 h-10 flex items-center justify-center rounded-full glass border-white/5 z-20">&times;</button>
+      
+      <div class="mb-8">
+        <h2 class="text-3xl font-black italic uppercase tracking-tighter">Shopping Bag 🛒</h2>
+        <p class="text-gray-500 text-[10px] uppercase tracking-widest mt-1">Review items sebelum checkout via WhatsApp</p>
       </div>
-      <div id="wishlist-empty" class="text-center py-10 hidden">
-        <p class="text-gray-500 italic">Belum ada jam favoritmu...</p>
+
+      <div id="cart-items" class="overflow-y-auto space-y-4 pr-2 flex-grow custom-scrollbar">
+      </div>
+
+      <div id="cart-empty" class="text-center py-10 hidden">
+        <p class="text-gray-500 italic">Keranjang belanja kosong...</p>
+      </div>
+
+      <div id="cart-footer" class="mt-8 pt-8 border-t border-white/10">
+        <div class="flex justify-between items-end mb-6">
+          <span class="text-gray-400 text-xs font-bold uppercase tracking-widest">Total Pesanan</span>
+          <span id="cart-total" class="text-2xl font-black text-blue-500 italic">Rp 0</span>
+        </div>
+        <button onclick="checkoutViaWA()" class="w-full bg-white text-black font-black py-5 rounded-[20px] hover:bg-blue-600 hover:text-white transition-all duration-500 shadow-2xl flex items-center justify-center gap-3">
+          CHECKOUT VIA WHATSAPP
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+        </button>
       </div>
     </div>
   </div>
@@ -77,7 +96,7 @@
     const listContainer = document.getElementById("produk-list");
     const searchInput = document.getElementById("searchInput");
     const kategoriContainer = document.getElementById("kategori-container");
-    const loadMoreBtn = document.getElementById("load-more-btn"); // Ambil elemen tombol
+    const loadMoreBtn = document.getElementById("load-more-btn"); 
 
     let activeCategory = "All";
     let searchQuery = "";
@@ -85,9 +104,9 @@
     // Variabel Data & Pagination
     let produkData = []; 
     let categories = ["All"];
-    let filteredProducts = []; // Nampung data yang udah difilter
-    let currentIndex = 0; // Mulai dari jam ke-0
-    const itemsPerLoad = 8; // Menampilkan 8 jam per klik
+    let filteredProducts = []; 
+    let currentIndex = 0; 
+    const itemsPerLoad = 8; 
 
     // --- WISHLIST LOGIC ---
     let wishlist = JSON.parse(localStorage.getItem('jam35_wishlist') || '[]');
@@ -110,7 +129,7 @@
       
       localStorage.setItem('jam35_wishlist', JSON.stringify(wishlist));
       updateWishlistCount();
-      displayProduk(); // Re-render to update icons
+      displayProduk(); 
     }
 
     function openWishlist() {
@@ -147,12 +166,95 @@
       wishlist = wishlist.filter(item => item.id !== id);
       localStorage.setItem('jam35_wishlist', JSON.stringify(wishlist));
       updateWishlistCount();
-      openWishlist(); // Refresh modal content
-      displayProduk(); // Refresh card icons
+      openWishlist(); 
+      displayProduk(); 
     }
 
     function closeWishlist() {
       document.getElementById("wishlistModal").classList.remove("active");
+    }
+
+    // --- SHOPPING CART LOGIC ---
+    let cart = JSON.parse(localStorage.getItem('jam35_cart') || '[]');
+
+    function updateCartCount() {
+      document.getElementById("cart-count").textContent = cart.length;
+    }
+
+    function addToCart(e, id) {
+      e.preventDefault();
+      e.stopPropagation();
+      const product = produkData.find(p => p.id === id);
+      const exists = cart.some(item => item.id === id);
+      
+      if (!exists) {
+        cart.push(product);
+        localStorage.setItem('jam35_cart', JSON.stringify(cart));
+        updateCartCount();
+        alert(`✨ Jam ${product.nama} masuk keranjang!`);
+      } else {
+        alert("Jam ini udah ada di keranjang bos!");
+      }
+    }
+
+    function openCart() {
+      const modal = document.getElementById("cartModal");
+      const container = document.getElementById("cart-items");
+      const emptyMsg = document.getElementById("cart-empty");
+      const footer = document.getElementById("cart-footer");
+      
+      modal.classList.add("active");
+      container.innerHTML = "";
+      
+      if (cart.length === 0) {
+        emptyMsg.classList.remove("hidden");
+        footer.classList.add("hidden");
+      } else {
+        emptyMsg.classList.add("hidden");
+        footer.classList.remove("hidden");
+        cart.forEach(p => {
+          container.innerHTML += `
+            <div class="flex items-center gap-5 bg-white/[0.03] p-5 rounded-[30px] border border-white/5">
+              <img src="${p.gambar}" class="w-24 h-24 object-cover rounded-2xl">
+              <div class="flex-grow">
+                <h4 class="font-black text-xl tracking-tight">${p.nama}</h4>
+                <p class="text-blue-400 font-black text-lg italic">${p.harga}</p>
+              </div>
+              <button onclick="removeFromCart('${p.id}')" class="w-12 h-12 glass rounded-2xl flex items-center justify-center hover:bg-red-600/20 hover:text-red-500 transition-all duration-300">🗑️</button>
+            </div>
+          `;
+        });
+        
+        // Sederhana: Hitung jumlah item aja, karena format harga string (misal: Rp 1.500.000)
+        document.getElementById("cart-total").textContent = cart.length + " Items";
+      }
+    }
+
+    function removeFromCart(id) {
+      cart = cart.filter(item => item.id !== id);
+      localStorage.setItem('jam35_cart', JSON.stringify(cart));
+      updateCartCount();
+      openCart();
+    }
+
+    function closeCart() {
+      document.getElementById("cartModal").classList.remove("active");
+    }
+
+    function checkoutViaWA() {
+      if (cart.length === 0) return;
+      
+      let itemText = cart.map((p, index) => `${index + 1}. *${p.nama}* (${p.harga})`).join('\n');
+      const invId = "INV-B" + Math.random().toString(36).substr(2, 5).toUpperCase();
+      
+      const waText = `*BULK ORDER - JAM35*\n` +
+                    `--------------------------\n` +
+                    `*ID:* #${invId}\n` +
+                    `*Daftar Pesanan:*\n${itemText}\n` +
+                    `--------------------------\n` +
+                    `_Mohon diproses pesanannya ya Min!_`;
+      
+      window.open(`https://wa.me/6282164605637?text=${encodeURIComponent(waText)}`, '_blank');
     }
 
     // Fungsi pembantu buat bikin URL detail produk
@@ -215,6 +317,7 @@
         categories = ["All", ...new Set(produkData.flatMap(p => p.kategori))];
 
         updateWishlistCount();
+        updateCartCount();
         renderKategori();
         displayProduk();
 
@@ -287,9 +390,14 @@
 
         listContainer.innerHTML += `
           <div class="bg-white/5 border border-white/10 p-4 rounded-3xl hover:bg-white/10 transition-all duration-300 group hover:-translate-y-2 flex flex-col justify-between h-full relative">
-            <button onclick="toggleWishlist(event, '${p.id}')" class="absolute top-6 right-6 z-10 w-10 h-10 glass rounded-full flex items-center justify-center text-sm hover:scale-110 transition-all">
-               ${isFav ? '❤️' : '🤍'}
-            </button>
+            <div class="absolute top-6 right-6 z-10 flex flex-col gap-2">
+              <button onclick="toggleWishlist(event, '${p.id}')" class="w-10 h-10 glass rounded-full flex items-center justify-center text-sm hover:scale-110 transition-all">
+                 ${isFav ? '❤️' : '🤍'}
+              </button>
+              <button onclick="addToCart(event, '${p.id}')" class="w-10 h-10 glass rounded-full flex items-center justify-center text-sm hover:scale-110 transition-all">
+                 🛒
+              </button>
+            </div>
             <div>
                 <div class="relative overflow-hidden rounded-2xl mb-5">
                    <img src="${p.gambar}" loading="lazy" class="w-full h-64 object-cover transform transition duration-700 group-hover:scale-110" alt="${p.nama}">

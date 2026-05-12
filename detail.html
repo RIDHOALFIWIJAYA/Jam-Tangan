@@ -39,19 +39,43 @@
       <div class="border-t border-white/10 pt-6">
         <p class="text-gray-400 leading-relaxed mb-8" id="deskripsi-produk"></p>
         
-        <button onclick="openOrderModal()" class="flex items-center justify-center gap-3 w-full bg-blue-600 text-white font-bold py-4 rounded-2xl hover:bg-blue-500 transition transform hover:scale-[1.02] mb-4 shadow-xl shadow-blue-600/20">
-          Pesan Sekarang (Formal)
-        </button>
-
-        <div class="grid grid-cols-2 gap-4">
-          <button onclick="shareToWA()" class="flex items-center justify-center gap-2 py-3 bg-white/5 border border-white/10 rounded-xl text-xs font-bold hover:bg-white/10 transition">
-            <span>📲</span> Share WA
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+          <button onclick="addToCart()" class="flex items-center justify-center gap-3 bg-white text-black font-black py-4 rounded-2xl hover:bg-blue-600 hover:text-white transition-all shadow-xl shadow-white/5">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
+            TAMBAH KERANJANG
           </button>
-          <button onclick="copyToClipboard()" class="flex items-center justify-center gap-2 py-3 bg-white/5 border border-white/10 rounded-xl text-xs font-bold hover:bg-white/10 transition">
-            <span id="copy-icon">🔗</span> <span id="copy-text">Copy Link</span>
+          <button onclick="openOrderModal()" class="flex items-center justify-center gap-3 bg-blue-600 text-white font-black py-4 rounded-2xl hover:bg-blue-700 transition-all shadow-xl shadow-blue-600/20">
+            PESAN SEKARANG
+          </button>
+        </div>
+
+        <div class="grid grid-cols-3 gap-3">
+          <button onclick="shareToWA()" class="flex flex-col items-center justify-center gap-2 py-4 bg-white/[0.03] border border-white/5 rounded-2xl hover:bg-white/10 transition group">
+            <span class="text-lg group-hover:scale-110 transition-transform">📲</span>
+            <span class="text-[9px] font-black uppercase tracking-widest text-gray-500 group-hover:text-white">WhatsApp</span>
+          </button>
+          <button onclick="shareToIG()" class="flex flex-col items-center justify-center gap-2 py-4 bg-white/[0.03] border border-white/5 rounded-2xl hover:bg-white/10 transition group">
+            <span class="text-lg group-hover:scale-110 transition-transform">📸</span>
+            <span class="text-[9px] font-black uppercase tracking-widest text-gray-500 group-hover:text-white">IG Story</span>
+          </button>
+          <button onclick="copyToClipboard()" class="flex flex-col items-center justify-center gap-2 py-4 bg-white/[0.03] border border-white/5 rounded-2xl hover:bg-white/10 transition group">
+            <span id="copy-icon" class="text-lg group-hover:scale-110 transition-transform">🔗</span>
+            <span id="copy-text" class="text-[9px] font-black uppercase tracking-widest text-gray-500 group-hover:text-white">Copy Link</span>
           </button>
         </div>
       </div>
+    </div>
+  </div>
+
+  <!-- Recently Viewed Section -->
+  <div id="recently-viewed-container" class="max-w-4xl w-full mt-20 hidden">
+    <div class="flex justify-between items-end mb-8">
+      <div>
+        <div class="inline-block px-3 py-1 bg-white/5 border border-white/10 rounded-full text-[9px] text-gray-500 font-black uppercase tracking-widest mb-3">Your History</div>
+        <h2 class="text-2xl font-black italic uppercase tracking-tighter">Terakhir Dilihat</h2>
+      </div>
+    </div>
+    <div id="recently-viewed-list" class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
     </div>
   </div>
 
@@ -133,6 +157,62 @@
     const gambar = params.get("gambar");
     const harga = params.get("harga");
     const deskripsi = params.get("deskripsi");
+
+    // --- RECENTLY VIEWED LOGIC ---
+    function updateRecentlyViewed() {
+      if (!currentId) return;
+      let recently = JSON.parse(localStorage.getItem('jam35_recently') || '[]');
+      
+      // Hapus jika sudah ada (biar naik ke atas)
+      recently = recently.filter(item => item.id !== currentId);
+      
+      // Tambah ke awal
+      recently.unshift({ id: currentId, nama, gambar, harga, deskripsi });
+      
+      // Limit 4 saja
+      recently = recently.slice(0, 5); // Ambil 5 (1 yang lagi dilihat + 4 lainnya)
+      localStorage.setItem('jam35_recently', JSON.stringify(recently));
+      renderRecentlyViewed(recently);
+    }
+
+    function renderRecentlyViewed(recently) {
+      const list = document.getElementById("recently-viewed-list");
+      const container = document.getElementById("recently-viewed-container");
+      
+      // Jangan tampilin jam yang lagi dilihat sekarang
+      const filtered = recently.filter(item => item.id !== currentId).slice(0, 4);
+      
+      if (filtered.length > 0) {
+        container.classList.remove("hidden");
+        list.innerHTML = filtered.map(p => `
+          <a href="${getDetailUrl(p)}" class="glass p-4 rounded-[25px] border-white/5 hover:border-blue-500/20 transition-all group">
+            <img src="${p.gambar}" class="w-full h-32 object-cover rounded-xl mb-4 group-hover:scale-105 transition-transform">
+            <h4 class="text-xs font-bold truncate">${p.nama}</h4>
+            <p class="text-[10px] text-blue-400 font-black mt-1">${p.harga}</p>
+          </a>
+        `).join('');
+      }
+    }
+
+    // --- SHOPPING CART LOGIC ---
+    function addToCart() {
+      let cart = JSON.parse(localStorage.getItem('jam35_cart') || '[]');
+      const exists = cart.some(item => item.id === currentId);
+      
+      if (!exists) {
+        cart.push({ id: currentId, nama, gambar, harga, deskripsi });
+        localStorage.setItem('jam35_cart', JSON.stringify(cart));
+        showToast("Masuk Keranjang! 🛒");
+      } else {
+        showToast("Sudah ada di Keranjang! ✨");
+      }
+    }
+
+    // --- IG STORY SHARE ---
+    function shareToIG() {
+      const text = `Gila! Jam ${nama} ini keren banget di JAM35. Definisi gaya sultan! 🔥`;
+      alert("PRO-TIP: Screenshot halaman ini, lalu share ke IG Story kamu & tag @JAM35_PREMIUM! 📸");
+    }
 
     // --- WISHLIST LOGIC ---
     let wishlist = JSON.parse(localStorage.getItem('jam35_wishlist') || '[]');
@@ -220,6 +300,7 @@
       
       updateWishlistUI();
       loadRelatedProducts();
+      updateRecentlyViewed();
     } else {
       document.body.innerHTML = "<div class='text-center p-20'><h1 class='text-4xl font-black mb-4'>Produk Tidak Ditemukan!</h1><a href='produk.html' class='text-blue-500 font-bold'>Kembali ke Katalog</a></div>";
     }
