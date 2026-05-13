@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://jam-tangan.vercel.app/sitemap.xml
