@@ -11,11 +11,19 @@
 
     <meta name="description" content="Jelajahi katalog jam tangan original terbaru. Berbagai pilihan jam tangan analog dan digital dari brand ternama dengan harga kompetitif dan kualitas terjamin.">
 
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://unpkg.com">
+    <link rel="dns-prefetch" href="https://sheetdb.io">
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap"></noscript>
+
+    <link href="dist/style.css" rel="stylesheet">
     <script src="https://unpkg.com/@dotlottie/player-component@latest/dist/dotlottie-player.mjs" type="module"></script>
-    <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet"/>
+    <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet" media="print" onload="this.media='all'">
+    <noscript><link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet"></noscript>
     <style>
-      @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
       body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #050505; color: white; }
       
       .scrollbar-hide::-webkit-scrollbar { display: none; }
@@ -142,9 +150,11 @@
     &copy; 2026 JAM35 PREMIUM WATCHES. CRAFTED FOR EXCELLENCE.
   </footer>
 
-  <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+  <script src="https://unpkg.com/aos@2.3.4/dist/aos.js" defer></script>
   <script>
-    AOS.init({ duration: 1000, once: true });
+    document.addEventListener('DOMContentLoaded', function() {
+      AOS.init({ duration: 1000, once: true });
+    });
 
     const WA_NUMBER = "6282164605637";
     const listContainer = document.getElementById("produk-list");

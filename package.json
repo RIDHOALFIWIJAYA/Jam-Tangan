@@ -1,0 +1,28 @@
+{
+  "name": "jam-tangan",
+  "version": "1.0.0",
+  "description": "**web ini diciptakan dari html css dan memakai library tailwind dan yg lain lain serta memakai php sedikit dan javascript native",
+  "main": "tailwind.config.js",
+  "scripts": {
+    "build": "NODE_ENV=production npx tailwindcss -i src/input.css -o dist/style.css --minify",
+    "dev": "npx tailwindcss -i src/input.css -o dist/style.css --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RIDHOALFIWIJAYA/Jam-Tangan.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/RIDHOALFIWIJAYA/Jam-Tangan/issues"
+  },
+  "homepage": "https://github.com/RIDHOALFIWIJAYA/Jam-Tangan#readme",
+  "devDependencies": {
+    "autoprefixer": "^10.5.0",
+    "cssnano": "^8.0.2",
+    "postcss": "^8.5.15",
+    "tailwindcss": "^3.4.19"
+  }
+}
