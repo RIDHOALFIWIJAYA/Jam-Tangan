@@ -22,26 +22,13 @@
 
 <link href="dist/style.css" rel="stylesheet">
 
-  <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet" media="print" onload="this.media='all'">
-  <noscript><link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet"></noscript>
+
   <style>
-    body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #050505; color: white; }
-    .glass { background: rgba(255, 255, 255, 0.02); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.05); }
-    .text-glow { text-shadow: 0 0 20px rgba(59, 130, 246, 0.5); }
     .bg-mesh {
       background-image: radial-gradient(at 0% 0%, hsla(253,16%,7%,1) 0, transparent 50%), 
                         radial-gradient(at 50% 0%, hsla(225,39%,30%,1) 0, transparent 50%), 
                         radial-gradient(at 100% 0%, hsla(339,49%,30%,1) 0, transparent 50%),
                         radial-gradient(at 100% 0%, rgb(39, 114, 98) 0, transparent 50%);
-    }
-    .skeleton {
-      background: linear-gradient(90deg, rgba(255,255,255,0.03) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.03) 75%);
-      background-size: 200% 100%;
-      animation: shimmer 2s infinite linear;
-    }
-    @keyframes shimmer {
-      from { background-position: -200% 0; }
-      to { background-position: 200% 0; }
     }
   </style>
   <meta property="og:title" content="Jam35 | Definisi waktu dan gaya" />
@@ -67,7 +54,7 @@
   }
   </script>
 </head>
-<body class="overflow-x-hidden">
+<body class="overflow-x-hidden bg-[#050505] text-white">
 
 <section id="lokasi" class="px-8 py-32 bg-black/30">
   <div class="max-w-7xl mx-auto">
@@ -376,6 +363,7 @@
           </div>
         `;
       });
+      _initAOS(container);
     } catch (error) {
       container.innerHTML = `<p class="col-span-full text-center text-red-500 font-bold">Failed to load products.</p>`;
     }
@@ -391,11 +379,30 @@
   updateGlobalCartCount();
 </script>
 
-<script src="https://unpkg.com/aos@2.3.4/dist/aos.js" defer></script>
 <script>
-  document.addEventListener('DOMContentLoaded', function() {
-    AOS.init({ duration: 1200, once: true });
-  });
+  (function(){
+    var obs = new IntersectionObserver(function(entries) {
+      entries.forEach(function(e) {
+        if (e.isIntersecting) {
+          var el = e.target;
+          el.style.setProperty('--aos-dur', (parseInt(el.dataset.aosDuration)||800)+'ms');
+          el.style.setProperty('--aos-del', (parseInt(el.dataset.aosDelay)||0)+'ms');
+          requestAnimationFrame(function(){ el.classList.add('aos-animate'); });
+          obs.unobserve(el);
+        }
+      });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('[data-aos]').forEach(function(el) {
+      el.classList.add('aos-init');
+      obs.observe(el);
+    });
+    window._initAOS = function(scope) {
+      (scope||document).querySelectorAll('[data-aos]').forEach(function(el) {
+        el.classList.add('aos-init');
+        obs.observe(el);
+      });
+    };
+  })();
 </script>
 </body>
 </html>

@@ -18,19 +18,11 @@
   <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap"></noscript>
 
   <link href="dist/style.css" rel="stylesheet">
-  <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet" media="print" onload="this.media='all'">
-  <noscript><link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet"></noscript>
+
 
   <style>
-    body { font-family: 'Plus Jakarta Sans', sans-serif; }
-    .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.05); }
-    .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(15px); z-index: 1000; align-items: center; justify-content: center; padding: 20px; }
-    .modal.active { display: flex; }
     input, textarea { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 15px; padding: 12px 16px; width: 100%; color: white; outline: none; transition: border 0.3s; }
     input:focus, textarea:focus { border-color: #3b82f6; }
-    .custom-scrollbar::-webkit-scrollbar { width: 5px; }
-    .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-    .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(59, 130, 246, 0.5); border-radius: 10px; }
   </style>
   
 </head>
@@ -187,12 +179,32 @@
     &copy; 2026 JAM35 PREMIUM WATCHES. ALL RIGHTS RESERVED.
   </footer>
 
-  <script src="https://unpkg.com/aos@2.3.4/dist/aos.js" defer></script>
   <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      AOS.init({ duration: 1000, once: true });
-    });
-
+    (function(){
+      var obs = new IntersectionObserver(function(entries) {
+        entries.forEach(function(e) {
+          if (e.isIntersecting) {
+            var el = e.target;
+            el.style.setProperty('--aos-dur', (parseInt(el.dataset.aosDuration)||800)+'ms');
+            el.style.setProperty('--aos-del', (parseInt(el.dataset.aosDelay)||0)+'ms');
+            requestAnimationFrame(function(){ el.classList.add('aos-animate'); });
+            obs.unobserve(el);
+          }
+        });
+      }, { threshold: 0.1 });
+      document.querySelectorAll('[data-aos]').forEach(function(el) {
+        el.classList.add('aos-init');
+        obs.observe(el);
+      });
+      window._initAOS = function(scope) {
+        (scope||document).querySelectorAll('[data-aos]').forEach(function(el) {
+          el.classList.add('aos-init');
+          obs.observe(el);
+        });
+      };
+    })();
+  </script>
+  <script>
     const WA_NUMBER = "6282164605637";
     const params = new URLSearchParams(window.location.search);
     const nama = params.get("nama");
