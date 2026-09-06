@@ -1,1 +1,4 @@
 node_modules/
+
+# dist/ tetap di-track karena dibutuhkan Vercel untuk static site.
+# Jalankan `npm run build` sebelum commit jika ada perubahan di src/input.css.

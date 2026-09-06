@@ -3,11 +3,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <title>Detail Produk | JAM35</title>
   <meta name="description" id="meta-desc" content="Temukan Jam impian kamu disini.">
   <meta property="og:title" id="og-title" content="Detail Produk | JAM35">
   <meta property="og:description" id="og-desc" content="Temukan Jam impian kamu disini.">
   <meta property="og:image" id="og-image" content="">
+  <meta property="og:type" content="product">
+  <meta property="og:url" content="https://jam-tangan.vercel.app/detail.html">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -51,7 +54,7 @@
     </button>
 
     <div class="md:w-1/2 p-4">
-      <img id="gambar-produk" class="w-full h-[400px] object-cover rounded-2xl shadow-lg" loading="lazy" />
+      <img id="gambar-produk" onerror="imgFallback(this)" class="w-full h-[400px] object-cover rounded-2xl shadow-lg" loading="lazy" />
     </div>
     
     <div class="md:w-1/2 p-8 flex flex-col justify-center">
@@ -206,6 +209,14 @@
   </script>
   <script>
     const WA_NUMBER = "6282164605637";
+
+    const IMG_FALLBACK = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23050505'/><circle cx='50' cy='50' r='28' fill='none' stroke='%233b82f6' stroke-width='4'/><path d='M50 38v12l8 6' stroke='%233b82f6' stroke-width='4' fill='none' stroke-linecap='round'/></svg>";
+
+    function imgFallback(img) {
+      img.onerror = null;
+      img.src = IMG_FALLBACK;
+    }
+
     const params = new URLSearchParams(window.location.search);
     const nama = params.get("nama");
     const currentId = params.get("id");
@@ -216,8 +227,9 @@
     // Update Global Cart Count
     function updateGlobalCartCount() {
       const cart = JSON.parse(localStorage.getItem('jam35_cart') || '[]');
+      const totalQty = cart.reduce((sum, item) => sum + (item.qty || 1), 0);
       const countElement = document.getElementById("cart-count-global");
-      if (countElement) countElement.textContent = cart.length;
+      if (countElement) countElement.textContent = totalQty;
     }
     updateGlobalCartCount();
 
@@ -241,7 +253,7 @@
         container.classList.remove("hidden");
         list.innerHTML = filtered.map(p => `
           <a href="${getDetailUrl(p)}" class="glass p-4 rounded-[25px] border-white/5 hover:border-blue-500/20 transition-all group">
-            <img src="${p.gambar}" class="w-full h-32 object-cover rounded-xl mb-4 group-hover:scale-105 transition-transform">
+            <img src="${p.gambar}" onerror="imgFallback(this)" class="w-full h-32 object-cover rounded-xl mb-4 group-hover:scale-105 transition-transform">
             <h4 class="text-[10px] font-bold truncate uppercase tracking-tighter">${p.nama}</h4>
             <p class="text-[10px] text-blue-400 font-black mt-1 italic">${p.harga}</p>
           </a>
@@ -252,15 +264,19 @@
     // --- SHOPPING CART LOGIC ---
     function addToCart() {
       let cart = JSON.parse(localStorage.getItem('jam35_cart') || '[]');
-      const exists = cart.some(item => item.id === currentId);
+      cart = cart.map(item => ({ ...item, qty: item.qty || 1 }));
+      const existing = cart.find(item => item.id === currentId);
       
-      if (!exists) {
-        cart.push({ id: currentId, nama, gambar, harga, deskripsi });
+      if (existing) {
+        existing.qty = (existing.qty || 1) + 1;
+        localStorage.setItem('jam35_cart', JSON.stringify(cart));
+        updateGlobalCartCount();
+        showToast(`✨ ${nama} ditambah! Masih ada ${existing.qty}x di keranjang.`);
+      } else {
+        cart.push({ id: currentId, nama, gambar, harga, deskripsi, qty: 1 });
         localStorage.setItem('jam35_cart', JSON.stringify(cart));
         updateGlobalCartCount();
         showToast("Masuk Keranjang! 🛒");
-      } else {
-        showToast("Sudah ada di Keranjang! ✨");
       }
     }
 
@@ -359,9 +375,11 @@
     }
 
     async function fetchWithCache(url) {
-      const cacheKey = 'jam35_products_cache';
-      const cacheTimeKey = 'jam35_products_cache_time';
-      const cacheExpiry = 60 * 60 * 1000;
+      const cacheKey = 'jam35_products_cache_v2';
+      const cacheTimeKey = 'jam35_products_cache_time_v2';
+      const cacheExpiry = 5 * 60 * 1000;
+      localStorage.removeItem('jam35_products_cache');
+      localStorage.removeItem('jam35_products_cache_time');
       const cachedData = localStorage.getItem(cacheKey);
       const cachedTime = localStorage.getItem(cacheTimeKey);
       const now = new Date().getTime();
@@ -392,7 +410,7 @@
         container.innerHTML = related.map(p => `
           <a href="${getDetailUrl(p)}" class="bg-white/5 border border-white/10 p-4 rounded-3xl hover:bg-white/10 transition-all group">
             <div class="relative overflow-hidden rounded-2xl mb-4">
-              <img src="${p.gambar}" loading="lazy" class="w-full h-48 object-cover group-hover:scale-110 transition duration-500" alt="${p.nama}">
+              <img src="${p.gambar}" loading="lazy" onerror="imgFallback(this)" class="w-full h-48 object-cover group-hover:scale-110 transition duration-500" alt="${p.nama}">
             </div>
             <h3 class="font-bold text-sm mb-1 uppercase tracking-tighter">${p.nama}</h3>
             <p class="text-blue-400 text-xs font-bold italic">${p.harga}</p>

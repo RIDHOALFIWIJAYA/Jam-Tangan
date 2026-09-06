@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <rect width="64" height="64" rx="14" fill="#050505"/>
+  <text x="32" y="44" font-family="Arial, sans-serif" font-size="38" font-weight="900" font-style="italic" fill="#3b82f6" text-anchor="middle">J</text>
+  <circle cx="47" cy="20" r="4" fill="none" stroke="#3b82f6" stroke-width="2.5"/>
+</svg>

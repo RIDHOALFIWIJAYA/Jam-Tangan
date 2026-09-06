@@ -3,17 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <meta name="robots" content="noindex, nofollow">
   <title>404 - Waktu Terhenti | JAM35</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="preconnect" href="https://unpkg.com">
   <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700;800&display=swap">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700;800&display=swap" media="print" onload="this.media='all'">
   <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700;800&display=swap"></noscript>
 
   <link href="dist/style.css" rel="stylesheet">
-  <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet" media="print" onload="this.media='all'">
-  <noscript><link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet"></noscript>
   <style>
     body { font-family: 'Plus Jakarta Sans', sans-serif; }
     .glass { background: rgba(255, 255, 255, 0.02); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.05); }
@@ -34,7 +33,7 @@
 </head>
 <body class="bg-[#050505] text-white overflow-hidden bg-mesh min-h-screen flex items-center justify-center">
 
-  <div class="relative z-10 text-center px-6 max-w-2xl" data-aos="zoom-in">
+  <div class="relative z-10 text-center px-6 max-w-2xl" data-aos="zoom-out-up">
     <h1 class="text-[150px] md:text-[200px] font-black leading-none tracking-tighter italic opacity-10 absolute -top-20 md:-top-32 left-1/2 -translate-x-1/2 select-none">404</h1>
     
     <div class="glass p-10 md:p-16 rounded-[40px] border-blue-500/20 relative overflow-hidden">
@@ -55,11 +54,24 @@
     <p class="mt-10 text-gray-600 text-xs tracking-[0.3em] uppercase">JAM35 PREMIUM WATCHES &bull; ERROR_TIME_NOT_FOUND</p>
   </div>
 
-  <script src="https://unpkg.com/aos@2.3.4/dist/aos.js" defer></script>
   <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      AOS.init({ duration: 1000, once: true });
-    });
+    (function(){
+      var obs = new IntersectionObserver(function(entries) {
+        entries.forEach(function(e) {
+          if (e.isIntersecting) {
+            var el = e.target;
+            el.style.setProperty('--aos-dur', (parseInt(el.dataset.aosDuration)||800)+'ms');
+            el.style.setProperty('--aos-del', (parseInt(el.dataset.aosDelay)||0)+'ms');
+            requestAnimationFrame(function(){ el.classList.add('aos-animate'); });
+            obs.unobserve(el);
+          }
+        });
+      }, { threshold: 0.1 });
+      document.querySelectorAll('[data-aos]').forEach(function(el) {
+        el.classList.add('aos-init');
+        obs.observe(el);
+      });
+    })();
   </script>
 </body>
 </html>

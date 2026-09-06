@@ -3,13 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="canonical" href="https://jam-tangan.vercel.app/produk.html">
     <meta name="geo.region" content="ID-SU" />
-    <meta name="geo.placename" content="Medan" />
-    <meta name="geo.position" content="-3.5952;98.6722" />
-    <meta name="ICBM" content="-3.5952, 98.6722" />
+    <meta name="geo.placename" content="Lubuk Pakam" />
+    <meta name="geo.position" content="3.555;98.875" />
+    <meta name="ICBM" content="3.555, 98.875" />
     <title>Katalog | JAM35  </title>
 
     <meta name="description" content="Jelajahi katalog jam tangan original terbaru. Berbagai pilihan jam tangan analog dan digital dari brand ternama dengan harga kompetitif dan kualitas terjamin.">
+
+    <meta property="og:title" content="Katalog | JAM35" />
+    <meta property="og:description" content="Jelajahi katalog jam tangan original terbaru dari brand ternama dengan harga kompetitif dan kualitas terjamin." />
+    <meta property="og:image" content="https://jam-tangan.vercel.app/gambar.webp" />
+    <meta property="og:url" content="https://jam-tangan.vercel.app/produk.html" />
+    <meta property="og:type" content="website" />
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -73,6 +81,9 @@
       </button>
     </div>
   </main>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="fixed top-24 right-6 bg-blue-600 text-white px-6 py-3 rounded-2xl shadow-2xl translate-x-[150%] transition-transform duration-500 z-[300] font-bold text-sm max-w-[280px]"></div>
 
   <!-- Cart Modal -->
   <div id="cartModal" class="modal">
@@ -150,6 +161,14 @@
   </script>
   <script>
     const WA_NUMBER = "6282164605637";
+
+    const IMG_FALLBACK = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23050505'/><circle cx='50' cy='50' r='28' fill='none' stroke='%233b82f6' stroke-width='4'/><path d='M50 38v12l8 6' stroke='%233b82f6' stroke-width='4' fill='none' stroke-linecap='round'/></svg>";
+
+    function imgFallback(img) {
+      img.onerror = null;
+      img.src = IMG_FALLBACK;
+    }
+
     const listContainer = document.getElementById("produk-list");
     const searchInput = document.getElementById("searchInput");
     const searchInputMobile = document.getElementById("searchInputMobile");
@@ -202,7 +221,7 @@
         wishlist.forEach(p => {
           container.innerHTML += `
             <div class="flex items-center gap-4 bg-white/[0.03] p-4 rounded-3xl border border-white/5 group hover:border-blue-500/30 transition-all">
-              <img src="${p.gambar}" class="w-20 h-20 object-cover rounded-2xl">
+              <img src="${p.gambar}" onerror="imgFallback(this)" class="w-20 h-20 object-cover rounded-2xl">
               <div class="flex-grow">
                 <h4 class="font-bold text-lg tracking-tight">${p.nama}</h4>
                 <p class="text-blue-400 font-bold text-sm italic">${p.harga}</p>
@@ -232,24 +251,55 @@
     // --- SHOPPING CART LOGIC ---
     let cart = JSON.parse(localStorage.getItem('jam35_cart') || '[]');
 
+    function saveCart() {
+      localStorage.setItem('jam35_cart', JSON.stringify(cart));
+      updateCartCount();
+    }
+
+    function getCartQty() {
+      return cart.reduce((sum, item) => sum + (item.qty || 1), 0);
+    }
+
     function updateCartCount() {
+      const totalQty = getCartQty();
       const countElement = document.getElementById("cart-count-global");
-      if (countElement) countElement.textContent = cart.length;
+      if (countElement) countElement.textContent = totalQty;
+    }
+
+    let toastTimer;
+    function showToast(msg) {
+      const toast = document.getElementById("toast");
+      if (!toast) return;
+      toast.textContent = msg;
+      toast.style.transform = "translateX(0)";
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => { toast.style.transform = "translateX(150%)"; }, 3000);
     }
 
     function addToCart(e, id) {
       if (e) { e.preventDefault(); e.stopPropagation(); }
       const product = produkData.find(p => p.id === id);
-      const exists = cart.some(item => item.id === id);
+      const existing = cart.find(item => item.id === id);
       
-      if (!exists) {
-        cart.push(product);
-        localStorage.setItem('jam35_cart', JSON.stringify(cart));
-        updateCartCount();
-        alert(`✨ Jam ${product.nama} masuk keranjang!`);
+      if (existing) {
+        existing.qty = (existing.qty || 1) + 1;
+        showToast(`✨ ${product.nama} ditambah! Masih ada ${existing.qty}x di keranjang.`);
       } else {
-        alert("Jam ini udah ada di keranjang bos!");
+        cart.push({ ...product, qty: 1 });
+        showToast(`✨ Jam ${product.nama} masuk keranjang!`);
       }
+      saveCart();
+    }
+
+    function changeQty(id, delta) {
+      const item = cart.find(i => i.id === id);
+      if (!item) return;
+      item.qty = (item.qty || 1) + delta;
+      if (item.qty <= 0) {
+        cart = cart.filter(i => i.id !== id);
+      }
+      saveCart();
+      openCart();
     }
 
     function openCart() {
@@ -268,25 +318,30 @@
         emptyMsg.classList.add("hidden");
         footer.classList.remove("hidden");
         cart.forEach(p => {
+          const qty = p.qty || 1;
           container.innerHTML += `
-            <div class="flex items-center gap-5 bg-white/[0.03] p-5 rounded-[30px] border border-white/5">
-              <img src="${p.gambar}" class="w-24 h-24 object-cover rounded-2xl">
+            <div class="flex items-center gap-4 sm:gap-5 bg-white/[0.03] p-4 sm:p-5 rounded-[30px] border border-white/5">
+              <img src="${p.gambar}" onerror="imgFallback(this)" class="w-20 h-20 sm:w-24 sm:h-24 object-cover rounded-2xl">
               <div class="flex-grow">
-                <h4 class="font-black text-xl tracking-tight">${p.nama}</h4>
+                <h4 class="font-black text-lg sm:text-xl tracking-tight">${p.nama}</h4>
                 <p class="text-blue-400 font-black text-lg italic">${p.harga}</p>
+                <div class="flex items-center gap-3 mt-3">
+                  <button onclick="changeQty('${p.id}', -1)" class="w-8 h-8 glass rounded-lg flex items-center justify-center hover:bg-blue-600 transition text-sm font-black">−</button>
+                  <span class="text-sm font-bold w-6 text-center">${qty}</span>
+                  <button onclick="changeQty('${p.id}', 1)" class="w-8 h-8 glass rounded-lg flex items-center justify-center hover:bg-blue-600 transition text-sm font-black">+</button>
+                </div>
               </div>
               <button onclick="removeFromCart('${p.id}')" class="w-12 h-12 glass rounded-2xl flex items-center justify-center hover:bg-red-600/20 hover:text-red-500 transition-all duration-300">🗑️</button>
             </div>
           `;
         });
-        document.getElementById("cart-total").textContent = cart.length + " Items";
+        document.getElementById("cart-total").textContent = getCartQty() + " Items";
       }
     }
 
     function removeFromCart(id) {
       cart = cart.filter(item => item.id !== id);
-      localStorage.setItem('jam35_cart', JSON.stringify(cart));
-      updateCartCount();
+      saveCart();
       openCart();
     }
 
@@ -296,25 +351,35 @@
 
     function checkoutViaWA() {
       if (cart.length === 0) return;
-      let itemText = cart.map((p, index) => `${index + 1}. *${p.nama}* (${p.harga})`).join('\n');
+      let itemText = cart.map((p, index) => {
+        const qty = p.qty || 1;
+        const totalLine = qty > 1 ? ` x${qty}` : '';
+        return `${index + 1}. *${p.nama}* (${p.harga})${totalLine}`;
+      }).join('\n');
       const invId = "INV-B" + Math.random().toString(36).substr(2, 5).toUpperCase();
       const waText = `*BULK ORDER - JAM35*\n` +
                     `--------------------------\n` +
                     `*ID:* #${invId}\n` +
+                    `*Total Item:* ${getCartQty()} pcs\n` +
                     `*Daftar Pesanan:*\n${itemText}\n` +
                     `--------------------------\n` +
                     `_Mohon diproses pesanannya ya Min!_`;
       window.open(`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(waText)}`, '_blank');
     }
 
+    // Sanitize legacy cart items (add qty if missing)
+    cart = cart.map(item => ({ ...item, qty: item.qty || 1 }));
+
     function getDetailUrl(p) {
       return `detail.html?id=${p.id}&nama=${encodeURIComponent(p.nama)}&gambar=${p.gambar}&harga=${p.harga}&deskripsi=${encodeURIComponent(p.deskripsi)}`;
     }
 
     async function fetchWithCache(url) {
-      const cacheKey = 'jam35_products_cache';
-      const cacheTimeKey = 'jam35_products_cache_time';
-      const cacheExpiry = 60 * 60 * 1000;
+      const cacheKey = 'jam35_products_cache_v2';
+      const cacheTimeKey = 'jam35_products_cache_time_v2';
+      const cacheExpiry = 5 * 60 * 1000;
+      localStorage.removeItem('jam35_products_cache');
+      localStorage.removeItem('jam35_products_cache_time');
       const cachedData = localStorage.getItem(cacheKey);
       const cachedTime = localStorage.getItem(cacheTimeKey);
       const now = new Date().getTime();
@@ -435,7 +500,7 @@
             </div>
             <div>
                 <div class="relative overflow-hidden rounded-[25px] mb-6">
-                   <img src="${p.gambar}" loading="lazy" class="w-full h-72 object-cover transform transition duration-1000 group-hover:scale-110" alt="${p.nama}">
+                   <img src="${p.gambar}" loading="lazy" onerror="imgFallback(this)" class="w-full h-72 object-cover transform transition duration-1000 group-hover:scale-110" alt="${p.nama}">
                    <div class="absolute top-4 left-4 right-4 flex flex-wrap gap-1.5 pointer-events-none">
                      ${tagHTML}
                    </div>
@@ -484,6 +549,10 @@
     });
 
     loadDataDariDatabase();
+
+    if (window.location.hash === '#cart' && window.location.href.indexOf('produk.html') !== -1) {
+      setTimeout(openCart, 400);
+    }
   </script>
 </body>
 </html>

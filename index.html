@@ -3,8 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="canonical" href="https://jam-tangan.vercel.app/">
   <meta name="geo.region" content="ID-SU" />
-  <meta name="geo.placename" content="Medan" />
+  <meta name="geo.placename" content="Lubuk Pakam" />
   <meta name="geo.position" content="-3.5952;98.6722" />
   <meta name="ICBM" content="-3.5952, 98.6722" />
   <title>Toko Jam Tangan Terjangkau Berkualitas | JAM35 </title>
@@ -33,6 +35,8 @@
   <meta property="og:title" content="Jam35 | Definisi waktu dan gaya" />
   <meta property="og:description" content="Temukan Jam impian kamu disini." />
   <meta property="og:image" content="https://jam-tangan.vercel.app/gambar.webp" />
+  <meta property="og:url" content="https://jam-tangan.vercel.app/" />
+  <meta property="og:type" content="website" />
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -295,14 +299,23 @@
 <script>
   const WA_NUMBER = "6282164605637";
 
+  const IMG_FALLBACK = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23050505'/><circle cx='50' cy='50' r='28' fill='none' stroke='%233b82f6' stroke-width='4'/><path d='M50 38v12l8 6' stroke='%233b82f6' stroke-width='4' fill='none' stroke-linecap='round'/></svg>";
+
+  function imgFallback(img) {
+    img.onerror = null;
+    img.src = IMG_FALLBACK;
+  }
+
   function getDetailUrl(p) {
     return `detail.html?id=${p.id}&nama=${encodeURIComponent(p.nama)}&gambar=${p.gambar}&harga=${p.harga}&deskripsi=${encodeURIComponent(p.deskripsi)}`;
   }
 
   async function fetchWithCache(url) {
-    const cacheKey = 'jam35_products_cache';
-    const cacheTimeKey = 'jam35_products_cache_time';
-    const cacheExpiry = 60 * 60 * 1000;
+    const cacheKey = 'jam35_products_cache_v2';
+    const cacheTimeKey = 'jam35_products_cache_time_v2';
+    const cacheExpiry = 5 * 60 * 1000;
+    localStorage.removeItem('jam35_products_cache');
+    localStorage.removeItem('jam35_products_cache_time');
     const cachedData = localStorage.getItem(cacheKey);
     const cachedTime = localStorage.getItem(cacheTimeKey);
     const now = new Date().getTime();
@@ -346,7 +359,7 @@
         container.innerHTML += `
           <div class="group relative glass p-6 rounded-[40px] transition-all duration-1000 hover:bg-blue-600/5 hover:-translate-y-4 hover:border-blue-500/40" data-aos="fade-up" data-aos-delay="${idx * 150}">
             <div class="relative overflow-hidden rounded-[30px] mb-8">
-              <img src="${p.gambar}" loading="lazy" class="w-full h-[450px] object-cover transition duration-1000 group-hover:scale-110" alt="${p.nama}">
+              <img src="${p.gambar}" loading="lazy" onerror="imgFallback(this)" class="w-full h-[450px] object-cover transition duration-1000 group-hover:scale-110" alt="${p.nama}">
               <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition duration-700 flex items-end p-10">
                 <p class="text-[10px] text-gray-300 uppercase tracking-[0.2em] font-bold line-clamp-3 leading-loose">${p.deskripsi}</p>
               </div>
@@ -370,8 +383,9 @@
 
   function updateGlobalCartCount() {
     const cart = JSON.parse(localStorage.getItem('jam35_cart') || '[]');
+    const totalQty = cart.reduce((sum, item) => sum + (item.qty || 1), 0);
     const countElement = document.getElementById("cart-count-global");
-    if (countElement) countElement.textContent = cart.length;
+    if (countElement) countElement.textContent = totalQty;
   }
 
   loadFeaturedProducts();

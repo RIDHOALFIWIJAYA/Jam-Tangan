@@ -4,7 +4,7 @@
   "description": "**web ini diciptakan dari html css dan memakai library tailwind dan yg lain lain serta memakai php sedikit dan javascript native",
   "main": "tailwind.config.js",
   "scripts": {
-    "build": "NODE_ENV=production npx tailwindcss -i src/input.css -o dist/style.css --minify",
+    "build": "cross-env NODE_ENV=production npx tailwindcss -i src/input.css -o dist/style.css --minify",
     "dev": "npx tailwindcss -i src/input.css -o dist/style.css --watch"
   },
   "repository": {
@@ -21,6 +21,7 @@
   "homepage": "https://github.com/RIDHOALFIWIJAYA/Jam-Tangan#readme",
   "devDependencies": {
     "autoprefixer": "^10.5.0",
+    "cross-env": "^10.1.0",
     "cssnano": "^8.0.2",
     "postcss": "^8.5.15",
     "tailwindcss": "^3.4.19"
