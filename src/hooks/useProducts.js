@@ -41,7 +41,7 @@ export function useProducts() {
             data.map((item) => ({
               id: item.id,
               nama: item.nama,
-              gambar: item.gambar,
+              gambar: item.gambar.replace(/^src\//, ""),
               harga: item.harga,
               kategori: item.kategori
                 ? item.kategori.split(",").map((k) => k.trim())
