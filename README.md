@@ -1,34 +1,40 @@
 # JAM35 - Premium Watches Store
 
-Toko jam tangan online yang dibangun dengan HTML, Tailwind CSS, dan JavaScript vanilla. Data produk diambil dari SheetDB.io (spreadsheet sebagai database).
+Toko jam tangan online yang dibangun dengan **React 19 + Vite 7 + Tailwind CSS 3**. Data produk diambil dari SheetDB.io (Google Sheets sebagai database) dan checkout dilakukan melalui WhatsApp.
 
 ## Tech Stack
 
-- HTML5
+- React 19
+- Vite 7
+- React Router DOM 7
 - Tailwind CSS 3
-- JavaScript Vanilla
 - SheetDB.io (database)
 - Google Fonts (Plus Jakarta Sans)
+
+## Fitur
+
+- Landing page dengan animasi scroll (custom AOS via IntersectionObserver)
+- Katalog produk dengan pencarian (`?q=`) dan filter kategori
+- Detail produk dengan route bersih `/detail/:id`
+- Keranjang belanja & wishlist yang tersimpan di localStorage
+- Checkout via WhatsApp (bulk order & order satuan)
+- Caching data produk di localStorage (TTL 5 menit)
+- Loading skeleton, lazy loading route, dan Error Boundary
 
 ## Struktur Folder
 
 ```
-├── index.html          # Halaman utama (landing page)
-├── produk.html         # Katalog produk dengan pencarian & filter
-├── detail.html         # Detail produk (via query string)
-├── 404.html            # Halaman error custom
-├── favicon.svg         # Icon situs
-├── gambar.webp         # Gambar OG/social share
-├── sitemap.xml         # Sitemap untuk SEO
-├── robots.txt          # Robots directive
-├── dist/
-│   └── style.css       # CSS hasil build Tailwind
+├── index.html                # HTML entry point
 ├── src/
-│   ├── input.css       # CSS sumber (Tailwind directives + custom styles)
-│   ├── analog/         # Gambar produk jam analog
-│   ├── digital/        # Gambar produk jam digital
-│   └── jamku/          # Gambar produk jam lainnya
-└── package.json
+│   ├── main.jsx              # Entry React (ErrorBoundary + Router + Provider)
+│   ├── App.jsx               # Route config (lazy loaded)
+│   ├── index.css             # Tailwind + custom styles
+│   ├── components/           # Layout, Header, Footer, ProductCard, Modal, dll
+│   ├── pages/                # Home, Products, Detail, NotFound
+│   ├── context/ShopContext   # State global (cart, wishlist, recently, toast)
+│   ├── hooks/useProducts     # Fetch + cache produk dari SheetDB
+│   └── data/api              # Konstanta & helper (WA, format harga, sanitasi)
+└── public/                   # Aset statis (gambar produk, favicon, sitemap)
 ```
 
 ## Cara Setup
@@ -37,23 +43,32 @@ Toko jam tangan online yang dibangun dengan HTML, Tailwind CSS, dan JavaScript v
 # Install dependencies
 npm install
 
-# Development (watch mode)
+# Development
 npm run dev
 
 # Build untuk production
 npm run build
+
+# Preview hasil build
+npm run preview
+
+# Lint & format
+npm run lint
+npm run format
 ```
 
 ## Cara Update Produk
 
 Produk dijalankan dari Google Sheet melalui SheetDB.io:
+
 1. Buka SheetDB dashboard
 2. Edit / tambah baris pada spreadsheet
 3. Kolom: `id`, `nama`, `gambar`, `harga`, `kategori`, `deskripsi`
+4. Path `gambar` relatif ke folder `public/` (contoh: `analog/analog1.webp`)
 
 ## Deploy
 
-Situs ini di-deploy ke Vercel sebagai static site. Push ke branch `main` untuk deploy otomatis.
+Situs ini di-deploy ke Vercel sebagai static site. Push ke branch `main` untuk deploy otomatis. Aturan SPA rewrite sudah diatur di `vercel.json`.
 
 ## License
 

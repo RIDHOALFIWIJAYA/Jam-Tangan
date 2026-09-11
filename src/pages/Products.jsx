@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useCallback } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useProducts } from "../hooks/useProducts";
 import ProductCard from "../components/ProductCard";
@@ -27,29 +27,32 @@ export default function Products() {
   const { products, loading, error } = useProducts();
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const [searchQuery, setSearchQuery] = useState("");
+  const searchQuery = searchParams.get("q") || "";
   const [activeCategory, setActiveCategory] = useState("All");
   const [visibleCount, setVisibleCount] = useState(ITEMS_PER_LOAD);
-  const [cartOpen, setCartOpen] = useState(false);
-  const [wishlistOpen, setWishlistOpen] = useState(false);
 
-  useEffect(() => {
-    const open = searchParams.get("open");
-    if (open === "cart") setCartOpen(true);
-    if (open === "wishlist") setWishlistOpen(true);
-  }, [searchParams]);
+  const cartOpen = searchParams.get("open") === "cart";
+  const wishlistOpen = searchParams.get("open") === "wishlist";
 
   const closeCart = useCallback(() => {
-    setCartOpen(false);
-    searchParams.delete("open");
-    setSearchParams(searchParams, { replace: true });
-  }, [searchParams, setSearchParams]);
+    setSearchParams(
+      (prev) => {
+        prev.delete("open");
+        return prev;
+      },
+      { replace: true }
+    );
+  }, [setSearchParams]);
 
   const closeWishlist = useCallback(() => {
-    setWishlistOpen(false);
-    searchParams.delete("open");
-    setSearchParams(searchParams, { replace: true });
-  }, [searchParams, setSearchParams]);
+    setSearchParams(
+      (prev) => {
+        prev.delete("open");
+        return prev;
+      },
+      { replace: true }
+    );
+  }, [setSearchParams]);
 
   const categories = ["All", ...new Set(products.flatMap((p) => p.kategori))];
 
@@ -63,7 +66,14 @@ export default function Products() {
   const hasMore = visibleCount < filtered.length;
 
   function handleSearch(value) {
-    setSearchQuery(value);
+    setSearchParams(
+      (prev) => {
+        if (value) prev.set("q", value);
+        else prev.delete("q");
+        return prev;
+      },
+      { replace: true }
+    );
     setVisibleCount(ITEMS_PER_LOAD);
   }
 
@@ -81,14 +91,17 @@ export default function Products() {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-12 gap-6">
         <AOS animation="fade-right">
           <h1 className="text-4xl md:text-6xl font-black italic tracking-tighter uppercase leading-tight">
-            Koleksi<br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-600 pr-4">JAM 35</span>
+            Koleksi
+            <br />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-600 pr-4">
+              JAM 35
+            </span>
           </h1>
         </AOS>
         <div className="md:hidden w-full" data-aos="fade-up">
           <input
             type="text"
-            placeholder="Search items..."
+            placeholder="Cari jam tangan..."
             className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 outline-none focus:border-blue-500/50 transition-all text-sm"
             value={searchQuery}
             onChange={(e) => handleSearch(e.target.value)}
@@ -145,7 +158,7 @@ export default function Products() {
                 onClick={loadMore}
                 className="px-10 py-4 glass hover:bg-blue-600 hover:border-transparent text-white font-bold rounded-2xl transition-all duration-500 shadow-xl tracking-widest text-xs uppercase"
               >
-                Load More Collection &#11015;&#65039;
+                Muat Lainnya &#11015;&#65039;
               </button>
             </div>
           )}

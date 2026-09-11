@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 body {
-  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-family: "Plus Jakarta Sans", sans-serif;
 }
 
 .glass {
@@ -17,14 +17,23 @@ body {
 }
 
 .skeleton {
-  background: linear-gradient(90deg, rgba(255,255,255,0.03) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.03) 75%);
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.03) 25%,
+    rgba(255, 255, 255, 0.08) 50%,
+    rgba(255, 255, 255, 0.03) 75%
+  );
   background-size: 200% 100%;
   animation: shimmer 2s infinite linear;
 }
 
 @keyframes shimmer {
-  from { background-position: -200% 0; }
-  to { background-position: 200% 0; }
+  from {
+    background-position: -200% 0;
+  }
+  to {
+    background-position: 200% 0;
+  }
 }
 
 .scrollbar-hide::-webkit-scrollbar {
@@ -40,7 +49,7 @@ body {
   display: none;
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.85);
+  background: rgba(0, 0, 0, 0.85);
   backdrop-filter: blur(20px);
   z-index: 1000;
   align-items: center;
@@ -57,7 +66,7 @@ body {
 }
 
 .custom-scrollbar::-webkit-scrollbar-track {
-  background: rgba(255,255,255,0.01);
+  background: rgba(255, 255, 255, 0.01);
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
@@ -83,12 +92,24 @@ body {
   transform: translate(0, 0) scale(1) rotateX(0) !important;
 }
 
-[data-aos="fade-up"] { transform: translateY(40px); }
-[data-aos="fade-down"] { transform: translateY(-40px); }
-[data-aos="fade-right"] { transform: translateX(-40px); }
-[data-aos="fade-left"] { transform: translateX(40px); }
-[data-aos="zoom-out-up"] { transform: translateY(40px) scale(0.95); }
-[data-aos="flip-up"] { transform: perspective(400px) rotateX(-8deg); }
+[data-aos="fade-up"] {
+  transform: translateY(40px);
+}
+[data-aos="fade-down"] {
+  transform: translateY(-40px);
+}
+[data-aos="fade-right"] {
+  transform: translateX(-40px);
+}
+[data-aos="fade-left"] {
+  transform: translateX(40px);
+}
+[data-aos="zoom-out-up"] {
+  transform: translateY(40px) scale(0.95);
+}
+[data-aos="flip-up"] {
+  transform: perspective(400px) rotateX(-8deg);
+}
 
 .empty-state-anim {
   width: 250px;
@@ -101,15 +122,23 @@ body {
 }
 
 @keyframes emptyPulse {
-  0%, 100% { transform: scale(1) rotate(0deg); opacity: 0.4; }
-  50% { transform: scale(1.1) rotate(8deg); opacity: 1; }
+  0%,
+  100% {
+    transform: scale(1) rotate(0deg);
+    opacity: 0.4;
+  }
+  50% {
+    transform: scale(1.1) rotate(8deg);
+    opacity: 1;
+  }
 }
 
 .bg-mesh {
-  background-image: radial-gradient(at 0% 0%, hsla(253,16%,7%,1) 0, transparent 50%),
-                    radial-gradient(at 50% 0%, hsla(225,39%,30%,1) 0, transparent 50%),
-                    radial-gradient(at 100% 0%, hsla(339,49%,30%,1) 0, transparent 50%),
-                    radial-gradient(at 100% 0%, rgb(39, 114, 98) 0, transparent 50%);
+  background-image:
+    radial-gradient(at 0% 0%, hsla(253, 16%, 7%, 1) 0, transparent 50%),
+    radial-gradient(at 50% 0%, hsla(225, 39%, 30%, 1) 0, transparent 50%),
+    radial-gradient(at 100% 0%, hsla(339, 49%, 30%, 1) 0, transparent 50%),
+    radial-gradient(at 100% 0%, rgb(39, 114, 98) 0, transparent 50%);
 }
 
 .glitch {
@@ -117,12 +146,25 @@ body {
 }
 
 @keyframes glitch {
-  2%, 64% { transform: translate(2px, 0) skew(0deg); }
-  4%, 60% { transform: translate(-2px, 0) skew(0deg); }
-  62% { transform: translate(0, 0) skew(5deg); }
+  2%,
+  64% {
+    transform: translate(2px, 0) skew(0deg);
+  }
+  4%,
+  60% {
+    transform: translate(-2px, 0) skew(0deg);
+  }
+  62% {
+    transform: translate(0, 0) skew(5deg);
+  }
 }
 
 @keyframes pulse-brand {
-  0%, 100% { opacity: 0.3; }
-  50% { opacity: 1; }
+  0%,
+  100% {
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 1;
+  }
 }

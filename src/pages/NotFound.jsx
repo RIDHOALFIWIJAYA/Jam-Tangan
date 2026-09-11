@@ -15,7 +15,9 @@ export default function NotFound() {
 
             <div className="mb-8">
               <span className="text-6xl md:text-8xl mb-6 block">&#9203;</span>
-              <h2 className="text-3xl md:text-5xl font-black uppercase tracking-tighter mb-4 glitch">Waktu Terhenti.</h2>
+              <h2 className="text-3xl md:text-5xl font-black uppercase tracking-tighter mb-4 glitch">
+                Waktu Terhenti.
+              </h2>
               <p className="text-gray-400 text-sm md:text-base leading-relaxed">
                 Sepertinya Anda tersesat di dimensi lain. Halaman yang Anda cari tidak ada di garis waktu ini.
               </p>

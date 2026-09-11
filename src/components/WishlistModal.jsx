@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useShop } from "../context/ShopContext";
-import { getDetailUrl } from "../data/api";
+import { getDetailUrl, formatCurrency, imgFallback } from "../data/api";
 
 export default function WishlistModal({ isOpen, onClose }) {
   const { wishlist, toggleWishlist } = useShop();
@@ -31,16 +31,14 @@ export default function WishlistModal({ isOpen, onClose }) {
             </div>
           ) : (
             wishlist.map((p) => (
-              <div key={p.id} className="flex items-center gap-4 bg-white/[0.03] p-4 rounded-3xl border border-white/5 group hover:border-blue-500/30 transition-all">
-                <img
-                  src={p.gambar}
-                  onError={(e) => { e.target.onerror = null; e.target.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23050505'/><circle cx='50' cy='50' r='28' fill='none' stroke='%233b82f6' stroke-width='4'/></svg>"; }}
-                  className="w-20 h-20 object-cover rounded-2xl"
-                  alt={p.nama}
-                />
+              <div
+                key={p.id}
+                className="flex items-center gap-4 bg-white/[0.03] p-4 rounded-3xl border border-white/5 group hover:border-blue-500/30 transition-all"
+              >
+                <img src={p.gambar} onError={imgFallback} className="w-20 h-20 object-cover rounded-2xl" alt={p.nama} />
                 <div className="flex-grow">
                   <h4 className="font-bold text-lg tracking-tight">{p.nama}</h4>
-                  <p className="text-blue-400 font-bold text-sm italic">{p.harga}</p>
+                  <p className="text-blue-400 font-bold text-sm italic">{formatCurrency(p.harga)}</p>
                 </div>
                 <div className="flex gap-2">
                   <button

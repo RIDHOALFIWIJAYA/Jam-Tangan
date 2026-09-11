@@ -1,52 +1,44 @@
-import { useState, useEffect } from "react";
-import { useSearchParams, Link } from "react-router-dom";
+import { useState, useEffect, useMemo, useRef } from "react";
+import { useParams, Link } from "react-router-dom";
 import { useShop } from "../context/ShopContext";
 import { useProducts } from "../hooks/useProducts";
-import { WA_NUMBER, imgFallback, getDetailUrl } from "../data/api";
+import { WA_NUMBER, imgFallback, getDetailUrl, formatCurrency, sanitizeWA } from "../data/api";
 import AOS from "../components/AOS";
 
 export default function Detail() {
-  const [params] = useSearchParams();
-  const id = params.get("id");
-  const nama = params.get("nama");
-  const gambar = params.get("gambar");
-  const harga = params.get("harga");
-  const deskripsi = params.get("deskripsi");
-
+  const { id } = useParams();
   const { addToCart, toggleWishlist, isInWishlist, addRecentlyViewed, recentlyViewed } = useShop();
-  const { products } = useProducts();
+  const { products, loading } = useProducts();
   const [orderOpen, setOrderOpen] = useState(false);
   const [orderNama, setOrderNama] = useState("");
   const [orderAlamat, setOrderAlamat] = useState("");
   const [invoiceId, setInvoiceId] = useState("");
   const [copyDone, setCopyDone] = useState(false);
+  const recordedRef = useRef(null);
 
-  const product = id ? { id, nama, gambar, harga, deskripsi } : null;
+  const product = id ? products.find((p) => p.id === id) || null : null;
   const isFav = isInWishlist(id);
 
   useEffect(() => {
     if (!product) return;
     document.title = `${product.nama} | JAM35 Premium Watches`;
-    addRecentlyViewed(product);
-  }, [id]);
+    if (recordedRef.current !== product.id) {
+      recordedRef.current = product.id;
+      addRecentlyViewed(product);
+    }
+  }, [id, product, addRecentlyViewed]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [id]);
 
-  if (!product) {
-    return (
-      <div className="text-center p-20 pt-32">
-        <h1 className="text-4xl font-black mb-4">Produk Tidak Ditemukan!</h1>
-        <Link to="/produk" className="text-blue-500 font-bold">Kembali ke Katalog</Link>
-      </div>
-    );
-  }
-
-  const related = products
-    .filter((p) => p.id !== id)
-    .sort(() => 0.5 - Math.random())
-    .slice(0, 3);
+  const related = useMemo(() => {
+    const others = products.filter((p) => p.id !== id);
+    if (others.length === 0) return [];
+    const start = (id.charCodeAt(0) + id.length) % others.length;
+    if (start === 0) return others.slice(0, 3);
+    return [...others.slice(start), ...others.slice(0, start)].slice(0, 3);
+  }, [products, id]);
 
   const recentFiltered = recentlyViewed.filter((i) => i.id !== id).slice(0, 4);
 
@@ -64,19 +56,19 @@ export default function Detail() {
     const waText =
       `*INVOICE ORDER JAM35*\n` +
       `--------------------------\n` +
-      `*ID:* #${invoiceId}\n` +
-      `*Produk:* ${nama}\n` +
-      `*Harga:* ${harga}\n\n` +
+      `*ID:* #${sanitizeWA(invoiceId)}\n` +
+      `*Produk:* ${sanitizeWA(product.nama)}\n` +
+      `*Harga:* ${formatCurrency(product.harga)}\n\n` +
       `*Data Pemesan:*\n` +
-      `Nama: ${orderNama}\n` +
-      `Alamat: ${orderAlamat}\n` +
+      `Nama: ${sanitizeWA(orderNama)}\n` +
+      `Alamat: ${sanitizeWA(orderAlamat)}\n` +
       `--------------------------\n` +
       `_Link Produk: ${window.location.href}_`;
     window.open(`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(waText)}`, "_blank");
   }
 
   function shareToWA() {
-    const text = `Cek deh jam tangan keren ini: *${nama}* di JAM35! \uD83D\uDD25\n\nLink: ${window.location.href}`;
+    const text = `Cek deh jam tangan keren ini: *${sanitizeWA(product.nama)}* di JAM35! \uD83D\uDD25\n\nLink: ${window.location.href}`;
     window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, "_blank");
   }
 
@@ -89,6 +81,35 @@ export default function Detail() {
       setCopyDone(true);
       setTimeout(() => setCopyDone(false), 2000);
     });
+  }
+
+  if (loading) {
+    return (
+      <div className="max-w-4xl w-full mx-auto mt-10 px-6 pt-20">
+        <div className="bg-white/5 border border-white/10 rounded-3xl overflow-hidden shadow-2xl flex flex-col md:flex-row animate-pulse">
+          <div className="md:w-1/2 p-4">
+            <div className="w-full h-[400px] rounded-2xl bg-white/10" />
+          </div>
+          <div className="md:w-1/2 p-8 space-y-6">
+            <div className="skeleton h-6 w-32 rounded-full" />
+            <div className="skeleton h-10 w-3/4 rounded-lg" />
+            <div className="skeleton h-8 w-32 rounded-lg" />
+            <div className="skeleton h-40 w-full rounded-2xl" />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!product) {
+    return (
+      <div className="text-center p-20 pt-32">
+        <h1 className="text-4xl font-black mb-4">Produk Tidak Ditemukan!</h1>
+        <Link to="/produk" className="text-blue-500 font-bold">
+          Kembali ke Katalog
+        </Link>
+      </div>
+    );
   }
 
   return (
@@ -105,7 +126,13 @@ export default function Detail() {
             </button>
 
             <div className="md:w-1/2 p-4">
-              <img src={gambar} onError={imgFallback} className="w-full h-[400px] object-cover rounded-2xl shadow-lg" loading="lazy" alt={nama} />
+              <img
+                src={product.gambar}
+                onError={imgFallback}
+                className="w-full h-[400px] object-cover rounded-2xl shadow-lg"
+                loading="lazy"
+                alt={product.nama}
+              />
             </div>
 
             <div className="md:w-1/2 p-8 flex flex-col justify-center">
@@ -113,12 +140,12 @@ export default function Detail() {
                 <span className="inline-block px-3 py-1 bg-blue-500/10 border border-blue-500/20 rounded-full text-[10px] text-blue-400 font-black uppercase tracking-widest mb-2">
                   Premium Series
                 </span>
-                <h1 className="text-4xl font-black mb-2 italic tracking-tighter">{nama}</h1>
+                <h1 className="text-4xl font-black mb-2 italic tracking-tighter">{product.nama}</h1>
               </div>
-              <h3 className="text-2xl font-bold text-blue-400 mb-6 italic">{harga}</h3>
+              <h3 className="text-2xl font-bold text-blue-400 mb-6 italic">{formatCurrency(product.harga)}</h3>
 
               <div className="border-t border-white/10 pt-6">
-                <p className="text-gray-400 leading-relaxed mb-8 text-sm">{deskripsi}</p>
+                <p className="text-gray-400 leading-relaxed mb-8 text-sm">{product.deskripsi}</p>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
                   <button
@@ -126,7 +153,12 @@ export default function Detail() {
                     className="flex items-center justify-center gap-3 bg-white text-black font-black py-4 rounded-2xl hover:bg-blue-600 hover:text-white transition-all shadow-xl shadow-white/5 text-sm uppercase tracking-wider"
                   >
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
+                      />
                     </svg>
                     TAMBAH KERANJANG
                   </button>
@@ -139,17 +171,34 @@ export default function Detail() {
                 </div>
 
                 <div className="grid grid-cols-3 gap-3">
-                  <button onClick={shareToWA} className="flex flex-col items-center justify-center gap-2 py-4 bg-white/[0.03] border border-white/5 rounded-2xl hover:bg-white/10 transition group">
+                  <button
+                    onClick={shareToWA}
+                    className="flex flex-col items-center justify-center gap-2 py-4 bg-white/[0.03] border border-white/5 rounded-2xl hover:bg-white/10 transition group"
+                  >
                     <span className="text-lg group-hover:scale-110 transition-transform">&#128242;</span>
-                    <span className="text-[9px] font-black uppercase tracking-widest text-gray-500 group-hover:text-white">WhatsApp</span>
+                    <span className="text-[9px] font-black uppercase tracking-widest text-gray-500 group-hover:text-white">
+                      WhatsApp
+                    </span>
                   </button>
-                  <button onClick={shareToIG} className="flex flex-col items-center justify-center gap-2 py-4 bg-white/[0.03] border border-white/5 rounded-2xl hover:bg-white/10 transition group">
+                  <button
+                    onClick={shareToIG}
+                    className="flex flex-col items-center justify-center gap-2 py-4 bg-white/[0.03] border border-white/5 rounded-2xl hover:bg-white/10 transition group"
+                  >
                     <span className="text-lg group-hover:scale-110 transition-transform">&#128248;</span>
-                    <span className="text-[9px] font-black uppercase tracking-widest text-gray-500 group-hover:text-white">IG Story</span>
+                    <span className="text-[9px] font-black uppercase tracking-widest text-gray-500 group-hover:text-white">
+                      IG Story
+                    </span>
                   </button>
-                  <button onClick={copyToClipboard} className="flex flex-col items-center justify-center gap-2 py-4 bg-white/[0.03] border border-white/5 rounded-2xl hover:bg-white/10 transition group">
-                    <span className="text-lg group-hover:scale-110 transition-transform">{copyDone ? "\u2705" : "\uD83D\uDD17"}</span>
-                    <span className="text-[9px] font-black uppercase tracking-widest text-gray-500 group-hover:text-white">{copyDone ? "Copied!" : "Copy Link"}</span>
+                  <button
+                    onClick={copyToClipboard}
+                    className="flex flex-col items-center justify-center gap-2 py-4 bg-white/[0.03] border border-white/5 rounded-2xl hover:bg-white/10 transition group"
+                  >
+                    <span className="text-lg group-hover:scale-110 transition-transform">
+                      {copyDone ? "\u2705" : "\uD83D\uDD17"}
+                    </span>
+                    <span className="text-[9px] font-black uppercase tracking-widest text-gray-500 group-hover:text-white">
+                      {copyDone ? "Tersalin!" : "Salin Link"}
+                    </span>
                   </button>
                 </div>
               </div>
@@ -165,7 +214,7 @@ export default function Detail() {
             <div className="flex justify-between items-end mb-8">
               <div>
                 <div className="inline-block px-3 py-1 bg-white/5 border border-white/10 rounded-full text-[9px] text-gray-500 font-black uppercase tracking-widest mb-3">
-                  Your History
+                  Riwayatmu
                 </div>
                 <h2 className="text-2xl font-black italic uppercase tracking-tighter">Terakhir Dilihat</h2>
               </div>
@@ -173,10 +222,19 @@ export default function Detail() {
           </AOS>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
             {recentFiltered.map((p) => (
-              <Link key={p.id} to={getDetailUrl(p)} className="glass p-4 rounded-[25px] border-white/5 hover:border-blue-500/20 transition-all group">
-                <img src={p.gambar} onError={imgFallback} className="w-full h-32 object-cover rounded-xl mb-4 group-hover:scale-105 transition-transform" alt={p.nama} />
+              <Link
+                key={p.id}
+                to={getDetailUrl(p)}
+                className="glass p-4 rounded-[25px] border-white/5 hover:border-blue-500/20 transition-all group"
+              >
+                <img
+                  src={p.gambar}
+                  onError={imgFallback}
+                  className="w-full h-32 object-cover rounded-xl mb-4 group-hover:scale-105 transition-transform"
+                  alt={p.nama}
+                />
                 <h4 className="text-[10px] font-bold truncate uppercase tracking-tighter">{p.nama}</h4>
-                <p className="text-[10px] text-blue-400 font-black mt-1 italic">{p.harga}</p>
+                <p className="text-[10px] text-blue-400 font-black mt-1 italic">{formatCurrency(p.harga)}</p>
               </Link>
             ))}
           </div>
@@ -189,31 +247,31 @@ export default function Detail() {
           <h2 className="text-2xl font-black mb-8 italic uppercase tracking-tight">Mungkin Kamu Suka</h2>
         </AOS>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-          {products.length === 0
-            ? Array(3)
-                .fill(0)
-                .map((_, i) => (
-                  <div key={i} className="bg-white/5 p-4 rounded-2xl animate-pulse">
-                    <div className="bg-white/10 h-48 rounded-xl mb-4" />
-                    <div className="h-4 bg-white/10 w-3/4 rounded mb-2" />
-                    <div className="h-4 bg-white/10 w-1/2 rounded" />
-                  </div>
-                ))
-            : related.map((p) => (
-                <Link key={p.id} to={getDetailUrl(p)} className="bg-white/5 border border-white/10 p-4 rounded-3xl hover:bg-white/10 transition-all group">
-                  <div className="relative overflow-hidden rounded-2xl mb-4">
-                    <img src={p.gambar} loading="lazy" onError={imgFallback} className="w-full h-48 object-cover group-hover:scale-110 transition duration-500" alt={p.nama} />
-                  </div>
-                  <h3 className="font-bold text-sm mb-1 uppercase tracking-tighter">{p.nama}</h3>
-                  <p className="text-blue-400 text-xs font-bold italic">{p.harga}</p>
-                </Link>
-              ))}
+          {related.map((p) => (
+            <Link
+              key={p.id}
+              to={getDetailUrl(p)}
+              className="bg-white/5 border border-white/10 p-4 rounded-3xl hover:bg-white/10 transition-all group"
+            >
+              <div className="relative overflow-hidden rounded-2xl mb-4">
+                <img
+                  src={p.gambar}
+                  loading="lazy"
+                  onError={imgFallback}
+                  className="w-full h-48 object-cover group-hover:scale-110 transition duration-500"
+                  alt={p.nama}
+                />
+              </div>
+              <h3 className="font-bold text-sm mb-1 uppercase tracking-tighter">{p.nama}</h3>
+              <p className="text-blue-400 text-xs font-bold italic">{formatCurrency(p.harga)}</p>
+            </Link>
+          ))}
         </div>
       </div>
 
       {/* Floating WA Button */}
       <a
-        href="https://wa.me/6282164605637"
+        href={`https://wa.me/${WA_NUMBER}`}
         target="_blank"
         rel="noopener noreferrer"
         className="fixed bottom-6 right-6 z-[200] flex items-center gap-3 bg-green-500 text-black px-6 py-3 rounded-full font-bold shadow-2xl hover:bg-green-400 hover:scale-110 transition-all duration-300 group"
@@ -247,7 +305,9 @@ export default function Detail() {
                   Secure Checkout
                 </div>
                 <h2 className="text-3xl md:text-4xl font-black mb-2 italic uppercase tracking-tighter leading-tight">
-                  Complete<br />Your Order.
+                  Complete
+                  <br />
+                  Your Order.
                 </h2>
                 <p className="text-gray-500 text-xs mb-10 uppercase tracking-widest leading-relaxed">
                   Silahkan isi data pengiriman Anda dengan benar untuk pembuatan invoice resmi.
@@ -282,12 +342,16 @@ export default function Detail() {
 
                   <div className="p-6 rounded-3xl bg-gradient-to-br from-white/[0.04] to-transparent border border-white/5 space-y-3">
                     <div className="flex justify-between items-center">
-                      <span className="text-[10px] uppercase font-bold text-gray-400 tracking-widest">Order Summary</span>
-                      <span className="text-[10px] font-black text-blue-500 bg-blue-500/10 px-2 py-0.5 rounded">#{invoiceId}</span>
+                      <span className="text-[10px] uppercase font-bold text-gray-400 tracking-widest">
+                        Order Summary
+                      </span>
+                      <span className="text-[10px] font-black text-blue-500 bg-blue-500/10 px-2 py-0.5 rounded">
+                        #{invoiceId}
+                      </span>
                     </div>
                     <div className="flex justify-between items-end">
-                      <h4 className="text-xl font-bold tracking-tight truncate max-w-[150px]">{nama}</h4>
-                      <div className="text-lg font-black italic text-white">{harga}</div>
+                      <h4 className="text-xl font-bold tracking-tight truncate max-w-[150px]">{product.nama}</h4>
+                      <div className="text-lg font-black italic text-white">{formatCurrency(product.harga)}</div>
                     </div>
                   </div>
 
@@ -297,12 +361,24 @@ export default function Detail() {
                   >
                     <span className="relative z-10 flex items-center justify-center gap-3">
                       KIRIM VIA WHATSAPP
-                      <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                      <svg
+                        className="w-5 h-5 group-hover:translate-x-1 transition-transform"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="3"
+                          d="M14 5l7 7m0 0l-7 7m7-7H3"
+                        />
                       </svg>
                     </span>
                   </button>
-                  <p className="text-[9px] text-center text-gray-600 uppercase tracking-widest font-bold">Encrypted & Secure Transaction</p>
+                  <p className="text-[9px] text-center text-gray-600 uppercase tracking-widest font-bold">
+                    Encrypted & Secure Transaction
+                  </p>
                 </div>
               </div>
             </div>

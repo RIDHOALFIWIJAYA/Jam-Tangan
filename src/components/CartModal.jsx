@@ -1,5 +1,5 @@
 import { useShop } from "../context/ShopContext";
-import { WA_NUMBER } from "../data/api";
+import { WA_NUMBER, formatCurrency, imgFallback, sanitizeWA } from "../data/api";
 
 export default function CartModal({ isOpen, onClose }) {
   const { cart, cartCount, changeQty, removeFromCart } = useShop();
@@ -12,7 +12,7 @@ export default function CartModal({ isOpen, onClose }) {
       .map((p, i) => {
         const qty = p.qty || 1;
         const totalLine = qty > 1 ? ` x${qty}` : "";
-        return `${i + 1}. *${p.nama}* (${p.harga})${totalLine}`;
+        return `${i + 1}. *${sanitizeWA(p.nama)}* (${formatCurrency(p.harga)})${totalLine}`;
       })
       .join("\n");
     const invId = "INV-B" + Math.random().toString(36).substr(2, 5).toUpperCase();
@@ -41,8 +41,10 @@ export default function CartModal({ isOpen, onClose }) {
         </button>
 
         <div className="mb-8">
-          <h2 className="text-3xl font-black italic uppercase tracking-tighter">Shopping Bag &#128722;</h2>
-          <p className="text-gray-500 text-[10px] uppercase tracking-widest mt-1">Review items sebelum checkout via WhatsApp</p>
+          <h2 className="text-3xl font-black italic uppercase tracking-tighter">Keranjang Belanja &#128722;</h2>
+          <p className="text-gray-500 text-[10px] uppercase tracking-widest mt-1">
+            Periksa barang sebelum checkout via WhatsApp
+          </p>
         </div>
 
         <div className="overflow-y-auto space-y-4 pr-2 flex-grow custom-scrollbar">
@@ -54,18 +56,41 @@ export default function CartModal({ isOpen, onClose }) {
             cart.map((p) => {
               const qty = p.qty || 1;
               return (
-                <div key={p.id} className="flex items-center gap-4 sm:gap-5 bg-white/[0.03] p-4 sm:p-5 rounded-[30px] border border-white/5">
-                  <img src={p.gambar} onError={(e) => { e.target.onerror = null; e.target.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23050505'/><circle cx='50' cy='50' r='28' fill='none' stroke='%233b82f6' stroke-width='4'/></svg>"; }} className="w-20 h-20 sm:w-24 sm:h-24 object-cover rounded-2xl" alt={p.nama} />
+                <div
+                  key={p.id}
+                  className="flex items-center gap-4 sm:gap-5 bg-white/[0.03] p-4 sm:p-5 rounded-[30px] border border-white/5"
+                >
+                  <img
+                    src={p.gambar}
+                    onError={imgFallback}
+                    className="w-20 h-20 sm:w-24 sm:h-24 object-cover rounded-2xl"
+                    alt={p.nama}
+                  />
                   <div className="flex-grow">
                     <h4 className="font-black text-lg sm:text-xl tracking-tight">{p.nama}</h4>
-                    <p className="text-blue-400 font-black text-lg italic">{p.harga}</p>
+                    <p className="text-blue-400 font-black text-lg italic">{formatCurrency(p.harga)}</p>
                     <div className="flex items-center gap-3 mt-3">
-                      <button onClick={() => changeQty(p.id, -1)} className="w-8 h-8 glass rounded-lg flex items-center justify-center hover:bg-blue-600 transition text-sm font-black">&minus;</button>
+                      <button
+                        onClick={() => changeQty(p.id, -1)}
+                        className="w-8 h-8 glass rounded-lg flex items-center justify-center hover:bg-blue-600 transition text-sm font-black"
+                      >
+                        &minus;
+                      </button>
                       <span className="text-sm font-bold w-6 text-center">{qty}</span>
-                      <button onClick={() => changeQty(p.id, 1)} className="w-8 h-8 glass rounded-lg flex items-center justify-center hover:bg-blue-600 transition text-sm font-black">+</button>
+                      <button
+                        onClick={() => changeQty(p.id, 1)}
+                        className="w-8 h-8 glass rounded-lg flex items-center justify-center hover:bg-blue-600 transition text-sm font-black"
+                      >
+                        +
+                      </button>
                     </div>
                   </div>
-                  <button onClick={() => removeFromCart(p.id)} className="w-12 h-12 glass rounded-2xl flex items-center justify-center hover:bg-red-600/20 hover:text-red-500 transition-all duration-300">&#128465;&#65039;</button>
+                  <button
+                    onClick={() => removeFromCart(p.id)}
+                    className="w-12 h-12 glass rounded-2xl flex items-center justify-center hover:bg-red-600/20 hover:text-red-500 transition-all duration-300"
+                  >
+                    &#128465;&#65039;
+                  </button>
                 </div>
               );
             })
